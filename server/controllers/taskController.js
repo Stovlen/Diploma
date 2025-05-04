@@ -41,6 +41,7 @@ exports.updateTask = async (req, res) => {
   }
 };
 
+
 // DELETE /api/tasks/:id
 exports.deleteTask = async (req, res) => {
   try {
