@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import AddTaskForm from "./AddTaskForm"; // не забудь перевірити правильний шлях
+import AddTaskForm from "./AddTaskForm";
 
 const TaskList = () => {
   const [tasks, setTasks] = useState([]);
@@ -74,7 +74,14 @@ const TaskList = () => {
             </li>
           ) : (
             <li key={task.id}>
-              <strong>{task.title}</strong> — {task.status}
+              <strong>{task.title}</strong> — {task.status} <br />
+              <em>Опис:</em> {task.description || "—"} <br />
+              <em>Пріоритет:</em> {task.priority} <br />
+              <em>Створено:</em>{" "}
+              {task.createdAt
+                ? new Date(task.createdAt).toLocaleDateString("uk-UA")
+                : "—"}{" "}
+              <br />
               <button onClick={() => startEdit(task)}>Редагувати</button>
               <button onClick={() => deleteTask(task.id)}>Видалити</button>
             </li>
