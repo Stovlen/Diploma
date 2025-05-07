@@ -36,3 +36,8 @@ sequelize
   .catch((err) => {
     console.error("❌ Failed to sync database:", err);
   });
+
+
+
+
+  
