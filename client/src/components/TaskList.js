@@ -6,7 +6,8 @@ const TaskList = () => {
   const [tasks, setTasks] = useState([]);
   const [editingTask, setEditingTask] = useState(null);
   const [editForm, setEditForm] = useState({});
-  const [filterStatus, setFilterStatus] = useState("all"); // нове
+  const [filterStatus, setFilterStatus] = useState("all");
+  const [filterPriority, setFilterPriority] = useState("all");
 
   useEffect(() => {
     fetchTasks();
@@ -49,17 +50,20 @@ const TaskList = () => {
       .catch((err) => console.error("Помилка при оновленні задачі:", err));
   };
 
-  const filteredTasks =
-    filterStatus === "all"
-      ? tasks
-      : tasks.filter((task) => task.status === filterStatus);
+  const filteredTasks = tasks
+    .filter((task) =>
+      filterStatus === "all" ? true : task.status === filterStatus
+    )
+    .filter((task) =>
+      filterPriority === "all" ? true : task.priority === filterPriority
+    );
 
   return (
     <>
       <AddTaskForm onTaskAdded={handleTaskAdded} />
 
-      <div style={{ marginTop: "1rem" }}>
-        <label>Фільтр за статусом: </label>
+      <label>
+        Фільтр за статусом:{" "}
         <select
           value={filterStatus}
           onChange={(e) => setFilterStatus(e.target.value)}
@@ -69,7 +73,21 @@ const TaskList = () => {
           <option value="in_progress">У процесі</option>
           <option value="done">Виконано</option>
         </select>
-      </div>
+      </label>
+
+      <label>
+        {" "}
+        Фільтр за пріоритетом:{" "}
+        <select
+          value={filterPriority}
+          onChange={(e) => setFilterPriority(e.target.value)}
+        >
+          <option value="all">Усі</option>
+          <option value="low">Низький</option>
+          <option value="medium">Середній</option>
+          <option value="high">Високий</option>
+        </select>
+      </label>
 
       <ul>
         {filteredTasks.map((task) =>
@@ -89,6 +107,15 @@ const TaskList = () => {
                 <option value="in_progress">У процесі</option>
                 <option value="done">Виконано</option>
               </select>
+              <select
+                name="priority"
+                value={editForm.priority}
+                onChange={handleEditChange}
+              >
+                <option value="low">Низький</option>
+                <option value="medium">Середній</option>
+                <option value="high">Високий</option>
+              </select>
               <button onClick={saveEdit}>Зберегти</button>
             </li>
           ) : (
@@ -99,7 +126,8 @@ const TaskList = () => {
               <br />
               <em>Пріоритет:</em> {task.priority}
               <br />
-              <em>Створено:</em> {new Date(task.createdAt).toLocaleDateString()}
+              <em>Створено:</em>{" "}
+              {new Date(task.createdAt).toLocaleDateString("uk-UA")}
               <br />
               <button onClick={() => startEdit(task)}>Редагувати</button>
               <button onClick={() => deleteTask(task.id)}>Видалити</button>
