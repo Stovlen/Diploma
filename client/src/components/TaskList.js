@@ -18,6 +18,16 @@ const TaskList = () => {
     fetchTasks();
   }, []);
 
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:5000/api/tasks/${id}`);
+      setTasks(tasks.filter((task) => task.id !== id));
+    } catch (err) {
+      console.error("Помилка при видаленні задачі:", err);
+    }
+  };
+
+
   return (
     <div>
       <AddTaskForm onTaskAdded={() => fetchTasks()} />
@@ -25,6 +35,7 @@ const TaskList = () => {
         {tasks.map((task) => (
           <li key={task.id}>
             <strong>{task.title}</strong> — {task.status}
+            <button onClick={() => handleDelete(task.id)}>Видалити</button>
           </li>
         ))}
       </ul>
