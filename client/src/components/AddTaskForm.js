@@ -6,8 +6,9 @@ const AddTaskForm = ({ onTaskAdded }) => {
     title: "",
     description: "",
     priority: "low",
-    status: "not_started", // виправлено
+    status: "not_started",
   });
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -15,23 +16,39 @@ const AddTaskForm = ({ onTaskAdded }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Валідація
+    if (!form.title.trim()) {
+      setError("Назва обов'язкова");
+      return;
+    }
+
+    if (form.title.length > 100) {
+      setError("Назва не може містити більше 100 символів");
+      return;
+    }
+
+    setError(""); // скидання помилки
+
     try {
       const res = await axios.post("http://localhost:5000/api/tasks", form);
-      onTaskAdded(res.data); // оновлення списку у TaskList
+      onTaskAdded(res.data);
       setForm({
         title: "",
         description: "",
         priority: "low",
-        status: "not_started", // скидання форми
+        status: "not_started",
       });
     } catch (err) {
       console.error("Помилка при створенні задачі:", err);
+      setError("Не вдалося створити задачу");
     }
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <h2>Додати нову задачу</h2>
+      {error && <p style={{ color: "red" }}>{error}</p>}
       <input
         type="text"
         name="title"
@@ -53,7 +70,7 @@ const AddTaskForm = ({ onTaskAdded }) => {
         <option value="high">Високий</option>
       </select>
       <select name="status" value={form.status} onChange={handleChange}>
-        <option value="not_started">Очікує</option> {/* виправлено */}
+        <option value="not_started">Очікує</option>
         <option value="in_progress">У процесі</option>
         <option value="done">Виконано</option>
       </select>
