@@ -7,6 +7,7 @@ const AddTaskForm = ({ onTaskAdded }) => {
     description: "",
     priority: "low",
     status: "not_started",
+    deadline: "",
   });
   const [error, setError] = useState("");
 
@@ -17,7 +18,6 @@ const AddTaskForm = ({ onTaskAdded }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Валідація
     if (!form.title.trim()) {
       setError("Назва обов'язкова");
       return;
@@ -28,7 +28,7 @@ const AddTaskForm = ({ onTaskAdded }) => {
       return;
     }
 
-    setError(""); // скидання помилки
+    setError("");
 
     try {
       const res = await axios.post("http://localhost:5000/api/tasks", form);
@@ -38,6 +38,7 @@ const AddTaskForm = ({ onTaskAdded }) => {
         description: "",
         priority: "low",
         status: "not_started",
+        deadline: "",
       });
     } catch (err) {
       console.error("Помилка при створенні задачі:", err);
@@ -62,6 +63,12 @@ const AddTaskForm = ({ onTaskAdded }) => {
         name="description"
         placeholder="Опис"
         value={form.description}
+        onChange={handleChange}
+      />
+      <input
+        type="date"
+        name="deadline"
+        value={form.deadline}
         onChange={handleChange}
       />
       <select name="priority" value={form.priority} onChange={handleChange}>
