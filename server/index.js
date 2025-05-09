@@ -37,6 +37,8 @@ sequelize
     console.error("❌ Failed to sync database:", err);
   });
 
+const authRoutes = require("./routes/authRoutes");
+app.use("/api", authRoutes);
 
 
 
