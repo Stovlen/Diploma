@@ -16,30 +16,34 @@ app.get("/", (req, res) => {
   res.send("TaskMaster backend is working!");
 });
 
-// Запуск сервера
-const PORT = process.env.PORT || 5000;
-const taskRoutes = require("./routes/taskRoutes");
-app.use("/api/tasks", taskRoutes);
-
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
-
+// Підключення до бази даних
 const sequelize = require("./config/database");
 const Task = require("./models/Task");
+const User = require("./models/User");
 
+// Визначення зв’язків між моделями
+User.hasMany(Task, { foreignKey: "userId" });
+Task.belongsTo(User, { foreignKey: "userId" });
+
+// Синхронізація з базою
 sequelize
   .sync()
   .then(() => {
-    console.log("✅ Database synced successfully");
+    console.log("✅ Database synced with force:true");
   })
   .catch((err) => {
     console.error("❌ Failed to sync database:", err);
   });
 
+// Підключення маршрутів
 const authRoutes = require("./routes/authRoutes");
+const taskRoutes = require("./routes/taskRoutes");
+
 app.use("/api", authRoutes);
+app.use("/api/tasks", taskRoutes);
 
-
-
-  
+// Запуск сервера
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
