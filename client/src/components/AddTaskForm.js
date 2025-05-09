@@ -5,9 +5,9 @@ const AddTaskForm = ({ onTaskAdded }) => {
   const [form, setForm] = useState({
     title: "",
     description: "",
+    deadline: "",
     priority: "low",
     status: "not_started",
-    deadline: "",
   });
   const [error, setError] = useState("");
 
@@ -30,15 +30,29 @@ const AddTaskForm = ({ onTaskAdded }) => {
 
     setError("");
 
+    const preparedForm = {
+      ...form,
+      deadline: form.deadline ? new Date(form.deadline).toISOString() : null,
+    };
+
     try {
-      const res = await axios.post("http://localhost:5000/api/tasks", form);
-      onTaskAdded(res.data);
+      const token = localStorage.getItem("token");
+      const response = await axios.post(
+        "http://localhost:5000/api/tasks",
+        preparedForm,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      onTaskAdded(response.data);
       setForm({
         title: "",
         description: "",
+        deadline: "",
         priority: "low",
         status: "not_started",
-        deadline: "",
       });
     } catch (err) {
       console.error("Помилка при створенні задачі:", err);
@@ -50,6 +64,7 @@ const AddTaskForm = ({ onTaskAdded }) => {
     <form onSubmit={handleSubmit}>
       <h2>Додати нову задачу</h2>
       {error && <p style={{ color: "red" }}>{error}</p>}
+
       <input
         type="text"
         name="title"

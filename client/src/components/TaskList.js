@@ -14,8 +14,13 @@ const TaskList = () => {
   }, []);
 
   const fetchTasks = () => {
+    const token = localStorage.getItem("token");
     axios
-      .get("http://localhost:5000/api/tasks")
+      .get("http://localhost:5000/api/tasks", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((res) => setTasks(res.data))
       .catch((err) => console.error("Помилка при завантаженні задач:", err));
   };
@@ -25,15 +30,20 @@ const TaskList = () => {
   };
 
   const deleteTask = (id) => {
+    const token = localStorage.getItem("token");
     axios
-      .delete(`http://localhost:5000/api/tasks/${id}`)
+      .delete(`http://localhost:5000/api/tasks/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then(() => setTasks(tasks.filter((task) => task.id !== id)))
       .catch((err) => console.error("Помилка при видаленні задачі:", err));
   };
 
   const startEdit = (task) => {
     setEditingTask(task.id);
-    setEditForm(task);
+    setEditForm({ ...task, deadline: task.deadline?.split("T")[0] || "" });
   };
 
   const handleEditChange = (e) => {
@@ -41,28 +51,18 @@ const TaskList = () => {
   };
 
   const saveEdit = () => {
+    const token = localStorage.getItem("token");
     axios
-      .put(`http://localhost:5000/api/tasks/${editingTask}`, editForm)
+      .put(`http://localhost:5000/api/tasks/${editingTask}`, editForm, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((res) => {
         setTasks(tasks.map((t) => (t.id === editingTask ? res.data : t)));
         setEditingTask(null);
       })
       .catch((err) => console.error("Помилка при оновленні задачі:", err));
-  };
-
-  const toggleTaskStatus = (task) => {
-    const updatedStatus = task.status === "done" ? "not_started" : "done";
-    axios
-      .put(`http://localhost:5000/api/tasks/${task.id}`, {
-        ...task,
-        status: updatedStatus,
-      })
-      .then((res) => {
-        setTasks(tasks.map((t) => (t.id === task.id ? res.data : t)));
-      })
-      .catch((err) =>
-        console.error("Помилка при зміні статусу виконання:", err)
-      );
   };
 
   const filteredTasks = tasks
@@ -113,6 +113,12 @@ const TaskList = () => {
                 value={editForm.title}
                 onChange={handleEditChange}
               />
+              <input
+                type="date"
+                name="deadline"
+                value={editForm.deadline || ""}
+                onChange={handleEditChange}
+              />
               <select
                 name="status"
                 value={editForm.status}
@@ -131,35 +137,25 @@ const TaskList = () => {
                 <option value="medium">Середній</option>
                 <option value="high">Високий</option>
               </select>
-              <input
-                type="date"
-                name="deadline"
-                value={editForm.deadline?.split("T")[0] || ""}
-                onChange={handleEditChange}
-              />
               <button onClick={saveEdit}>Зберегти</button>
             </li>
           ) : (
             <li key={task.id}>
-              <input
-                type="checkbox"
-                checked={task.status === "done"}
-                onChange={() => toggleTaskStatus(task)}
-              />
               <strong>{task.title}</strong> — {task.status}
               <br />
               <em>Опис:</em> {task.description}
               <br />
               <em>Пріоритет:</em> {task.priority}
               <br />
-              {task.deadline && (
-                <em>
-                  Дедлайн: {new Date(task.deadline).toLocaleDateString("uk-UA")}
-                </em>
-              )}
-              <br />
               <em>Створено:</em>{" "}
               {new Date(task.createdAt).toLocaleDateString("uk-UA")}
+              {task.deadline && (
+                <>
+                  <br />
+                  <em>Дедлайн:</em>{" "}
+                  {new Date(task.deadline).toLocaleDateString("uk-UA")}
+                </>
+              )}
               <br />
               <button onClick={() => startEdit(task)}>Редагувати</button>
               <button onClick={() => deleteTask(task.id)}>Видалити</button>
