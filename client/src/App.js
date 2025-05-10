@@ -1,16 +1,20 @@
 import React, { useState, useEffect } from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import TaskList from "./components/TaskList";
 import LoginForm from "./components/LoginForm";
+import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    // Перевіряємо, чи є токен у localStorage
     const token = localStorage.getItem("token");
-    if (token) {
-      setIsAuthenticated(true);
-    }
+    setIsAuthenticated(!!token);
   }, []);
 
   const handleLogin = () => {
@@ -23,16 +27,34 @@ function App() {
   };
 
   return (
-    <div>
-      {isAuthenticated ? (
-        <>
-          <button onClick={handleLogout}>Вийти</button>
-          <TaskList />
-        </>
-      ) : (
-        <LoginForm onLogin={handleLogin} />
-      )}
-    </div>
+    <Router>
+      {isAuthenticated && <button onClick={handleLogout}>Вийти</button>}
+
+      <Routes>
+        <Route
+          path="/login"
+          element={
+            isAuthenticated ? (
+              <Navigate to="/tasks" />
+            ) : (
+              <LoginForm onLogin={handleLogin} />
+            )
+          }
+        />
+        <Route
+          path="/tasks"
+          element={
+            <PrivateRoute isAuthenticated={isAuthenticated}>
+              <TaskList />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/"
+          element={<Navigate to={isAuthenticated ? "/tasks" : "/login"} />}
+        />
+      </Routes>
+    </Router>
   );
 }
 
