@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { getAuthHeaders } from "../utils/authHeaders";
 
 const AddTaskForm = ({ onTaskAdded }) => {
   const [form, setForm] = useState({
@@ -36,14 +37,11 @@ const AddTaskForm = ({ onTaskAdded }) => {
     };
 
     try {
-      const token = localStorage.getItem("token");
       const response = await axios.post(
         "http://localhost:5000/api/tasks",
         preparedForm,
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: getAuthHeaders(),
         }
       );
       onTaskAdded(response.data);

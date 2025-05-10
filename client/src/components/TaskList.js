@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import AddTaskForm from "./AddTaskForm";
+import { getAuthHeaders } from "../utils/authHeaders";
 
 const TaskList = () => {
   const [tasks, setTasks] = useState([]);
@@ -14,12 +15,9 @@ const TaskList = () => {
   }, []);
 
   const fetchTasks = () => {
-    const token = localStorage.getItem("token");
     axios
       .get("http://localhost:5000/api/tasks", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: getAuthHeaders(),
       })
       .then((res) => setTasks(res.data))
       .catch((err) => console.error("Помилка при завантаженні задач:", err));
@@ -30,12 +28,9 @@ const TaskList = () => {
   };
 
   const deleteTask = (id) => {
-    const token = localStorage.getItem("token");
     axios
       .delete(`http://localhost:5000/api/tasks/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: getAuthHeaders(),
       })
       .then(() => setTasks(tasks.filter((task) => task.id !== id)))
       .catch((err) => console.error("Помилка при видаленні задачі:", err));
@@ -51,12 +46,9 @@ const TaskList = () => {
   };
 
   const saveEdit = () => {
-    const token = localStorage.getItem("token");
     axios
       .put(`http://localhost:5000/api/tasks/${editingTask}`, editForm, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: getAuthHeaders(),
       })
       .then((res) => {
         setTasks(tasks.map((t) => (t.id === editingTask ? res.data : t)));
