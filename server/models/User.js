@@ -1,6 +1,5 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
-const Task = require("./Task"); // додаємо зв'язок
 
 const User = sequelize.define("User", {
   email: {
@@ -15,10 +14,11 @@ const User = sequelize.define("User", {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  role: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    defaultValue: "user", // "user" або "admin"
+  },
 });
-
-// 🔗 Додаємо асоціації
-User.hasMany(Task, { foreignKey: "userId" });
-Task.belongsTo(User, { foreignKey: "userId" });
 
 module.exports = User;

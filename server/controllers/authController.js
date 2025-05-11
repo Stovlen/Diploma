@@ -1,14 +1,14 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const User = require("../models/User"); // Перевір, чи правильний шлях до моделі
+const User = require("../models/User");
 require("dotenv").config();
 
 // Генерація JWT токена
 const generateToken = (user) => {
   return jwt.sign(
-    { id: user.id, email: user.email }, // payload
-    process.env.JWT_SECRET, // секрет з .env
-    { expiresIn: "1h" } // тривалість дії токена
+    { id: user.id, email: user.email, role: user.role }, // додано role
+    process.env.JWT_SECRET,
+    { expiresIn: "1h" }
   );
 };
 
@@ -25,7 +25,10 @@ exports.register = async (req, res) => {
     const user = await User.create({ email, password: hashedPassword });
 
     const token = generateToken(user);
-    res.status(201).json({ user: { id: user.id, email: user.email }, token });
+    res.status(201).json({
+      user: { id: user.id, email: user.email, role: user.role },
+      token,
+    });
   } catch (err) {
     res.status(500).json({ error: "Помилка при реєстрації" });
   }
@@ -41,7 +44,10 @@ exports.login = async (req, res) => {
     }
 
     const token = generateToken(user);
-    res.json({ user: { id: user.id, email: user.email }, token });
+    res.json({
+      user: { id: user.id, email: user.email, role: user.role },
+      token,
+    });
   } catch (err) {
     res.status(500).json({ error: "Помилка при вході" });
   }

@@ -29,7 +29,7 @@ Task.belongsTo(User, { foreignKey: "userId" });
 sequelize
   .sync()
   .then(() => {
-    console.log("✅ Database synced with force:true");
+    console.log("✅ Database synced successfully");
   })
   .catch((err) => {
     console.error("❌ Failed to sync database:", err);
@@ -38,9 +38,11 @@ sequelize
 // Підключення маршрутів
 const authRoutes = require("./routes/authRoutes");
 const taskRoutes = require("./routes/taskRoutes");
+const adminRoutes = require("./routes/adminRoutes"); // перенесено сюди
 
 app.use("/api", authRoutes);
 app.use("/api/tasks", taskRoutes);
+app.use("/api/admin", adminRoutes); // ✅ тепер app вже ініціалізовано
 
 // Запуск сервера
 const PORT = process.env.PORT || 5000;
