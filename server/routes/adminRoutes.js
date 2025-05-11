@@ -8,4 +8,7 @@ const adminController = require("../controllers/adminController");
 // захищений маршрут для отримання списку всіх користувачів
 router.get("/users", authMiddleware, isAdmin, adminController.getAllUsers);
 
+router.get("/tasks", authMiddleware, isAdmin, adminController.getAllTasks);
+
+
 module.exports = router;

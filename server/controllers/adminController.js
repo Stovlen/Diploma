@@ -12,3 +12,18 @@ exports.getAllUsers = async (req, res) => {
     res.status(500).json({ error: "Помилка сервера" });
   }
 };
+
+const Task = require("../models/Task");
+exports.getAllTasks = async (req, res) => {
+  try {
+    const tasks = await Task.findAll({
+      include: {
+        model: User,
+        attributes: ["id", "email", "role"],
+      },
+    });
+    res.json(tasks);
+  } catch (err) {
+    res.status(500).json({ error: "Не вдалося отримати задачі" });
+  }
+};
