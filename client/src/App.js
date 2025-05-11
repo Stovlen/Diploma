@@ -1,17 +1,23 @@
-import React, { useState, useEffect } from "react";
-import TaskList from "./components/TaskList";
-import LoginForm from "./components/LoginForm";
-import RegisterForm from "./components/RegisterForm";
+import React, { useEffect, useState } from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+
+import PrivateRoute from "./components/PrivateRoute";
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
+import TasksPage from "./pages/TasksPage";
+import NotFound from "./pages/NotFound";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isRegistering, setIsRegistering] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (token) {
-      setIsAuthenticated(true);
-    }
+    setIsAuthenticated(!!token);
   }, []);
 
   const handleLogin = () => {
@@ -23,42 +29,23 @@ function App() {
     setIsAuthenticated(false);
   };
 
-  const handleRegister = (token) => {
-    localStorage.setItem("token", token);
-    setIsAuthenticated(true);
-  };
-
   return (
-    <div>
-      {isAuthenticated ? (
-        <>
-          <button onClick={handleLogout}>Вийти</button>
-          <TaskList />
-        </>
-      ) : (
-        <>
-          {isRegistering ? (
-            <>
-              <RegisterForm onRegister={handleRegister} />
-              <p>
-                Уже є акаунт?{" "}
-                <button onClick={() => setIsRegistering(false)}>Увійти</button>
-              </p>
-            </>
-          ) : (
-            <>
-              <LoginForm onLogin={handleLogin} />
-              <p>
-                Ще не маєте акаунта?{" "}
-                <button onClick={() => setIsRegistering(true)}>
-                  Зареєструватися
-                </button>
-              </p>
-            </>
-          )}
-        </>
-      )}
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route
+          path="/tasks"
+          element={
+            <PrivateRoute isAuthenticated={isAuthenticated}>
+              <TasksPage onLogout={handleLogout} />
+            </PrivateRoute>
+          }
+        />
+        <Route path="/" element={<Navigate to="/tasks" />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </Router>
   );
 }
 

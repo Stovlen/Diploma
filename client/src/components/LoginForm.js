@@ -26,7 +26,6 @@ const LoginForm = ({ onLogin }) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <h2>Вхід</h2>
       {error && <p style={{ color: "red" }}>{error}</p>}
       <input
         type="email"

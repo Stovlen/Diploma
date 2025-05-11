@@ -39,7 +39,7 @@ const RegisterForm = ({ onRegister }) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <h2>Реєстрація</h2>
+    
       {error && <p style={{ color: "red" }}>{error}</p>}
 
       <input
