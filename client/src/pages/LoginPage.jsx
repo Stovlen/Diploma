@@ -24,6 +24,7 @@ const LoginPage = ({ onLogin }) => {
 
       if (response.ok) {
         localStorage.setItem("token", data.token);
+        localStorage.setItem("userRole", data.user.role); // ✅ зберігаємо роль
         onLogin();
         navigate("/tasks");
       } else {
@@ -45,12 +46,14 @@ const LoginPage = ({ onLogin }) => {
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          required
         />
         <input
           type="password"
           placeholder="Пароль"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          required
         />
         <button type="submit">Увійти</button>
       </form>

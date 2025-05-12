@@ -15,9 +15,10 @@ const LoginForm = ({ onLogin }) => {
 
     try {
       const res = await axios.post("http://localhost:5000/api/login", form);
-      const { token } = res.data;
+      const { token, user } = res.data;
       localStorage.setItem("token", token);
-      onLogin(); // повідомляємо батьківський компонент
+      localStorage.setItem("userRole", user.role); // ✅
+      onLogin();
     } catch (err) {
       console.error(err);
       setError("Невірний email або пароль");
