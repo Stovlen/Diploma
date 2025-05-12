@@ -10,5 +10,19 @@ router.get("/users", authMiddleware, isAdmin, adminController.getAllUsers);
 
 router.get("/tasks", authMiddleware, isAdmin, adminController.getAllTasks);
 
+router.put(
+  "/tasks/:id",
+  authMiddleware,
+  isAdmin,
+  adminController.updateTaskByAdmin
+);
+router.delete(
+  "/tasks/:id",
+  authMiddleware,
+  isAdmin,
+  adminController.deleteTaskByAdmin
+);
+
+
 
 module.exports = router;
