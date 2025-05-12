@@ -1,12 +1,14 @@
 // src/pages/AdminPage.jsx
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { getAuthHeaders } from "../utils/authHeaders";
 
-const AdminPage = () => {
+const AdminPage = ({ onLogout }) => {
   const [users, setUsers] = useState([]);
   const [tasks, setTasks] = useState([]);
   const [filterEmail, setFilterEmail] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchUsers();
@@ -24,10 +26,10 @@ const AdminPage = () => {
     }
   };
 
-  const fetchTasks = async () => {
+  const fetchTasks = async (email = "") => {
     try {
-      const url = filterEmail
-        ? `http://localhost:5000/api/admin/tasks?email=${filterEmail}`
+      const url = email
+        ? `http://localhost:5000/api/admin/tasks?email=${email}`
         : "http://localhost:5000/api/admin/tasks";
 
       const res = await axios.get(url, {
@@ -45,12 +47,23 @@ const AdminPage = () => {
 
   const handleFilterSubmit = (e) => {
     e.preventDefault();
+    fetchTasks(filterEmail);
+  };
+
+  const handleClearFilter = () => {
+    setFilterEmail("");
     fetchTasks();
+  };
+
+  const handleLogoutClick = () => {
+    onLogout();
+    navigate("/login");
   };
 
   return (
     <div>
-      <h2>Адміністративна панель</h2>
+      <button onClick={handleLogoutClick}>Вийти</button>
+      <h2>Панель Адміністратора</h2>
 
       <h3>Користувачі</h3>
       <ul>
@@ -70,6 +83,9 @@ const AdminPage = () => {
           onChange={handleFilterChange}
         />
         <button type="submit">Фільтрувати</button>
+        <button type="button" onClick={handleClearFilter}>
+          Очистити фільтр
+        </button>
       </form>
 
       <h3>Усі задачі</h3>
