@@ -10,6 +10,15 @@ router.get("/users", authMiddleware, isAdmin, adminController.getAllUsers);
 
 router.get("/tasks", authMiddleware, isAdmin, adminController.getAllTasks);
 
+// GET /api/admin/tasks/user/:email
+router.get(
+    "/tasks/user/:email",
+    authMiddleware,
+    isAdmin,
+    adminController.getTasksByUserEmail
+  );
+  
+
 router.put(
   "/tasks/:id",
   authMiddleware,

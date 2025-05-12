@@ -60,3 +60,27 @@ exports.deleteTaskByAdmin = async (req, res) => {
     res.status(500).json({ error: "Не вдалося видалити задачу" });
   }
 };
+
+exports.getTasksByUserEmail = async (req, res) => {
+  try {
+    const { email } = req.params;
+    const user = await User.findOne({ where: { email } });
+
+    if (!user) {
+      return res.status(404).json({ error: "Користувача не знайдено" });
+    }
+
+    const tasks = await Task.findAll({
+      where: { userId: user.id },
+      include: {
+        model: User,
+        attributes: ["id", "email", "role"],
+      },
+    });
+
+    res.json(tasks);
+  } catch (err) {
+    console.error("Помилка при отриманні задач користувача:", err);
+    res.status(500).json({ error: "Не вдалося отримати задачі" });
+  }
+};
