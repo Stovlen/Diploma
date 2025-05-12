@@ -8,6 +8,8 @@ const AdminPage = ({ onLogout }) => {
   const [users, setUsers] = useState([]);
   const [tasks, setTasks] = useState([]);
   const [filterEmail, setFilterEmail] = useState("");
+  const [editingTaskId, setEditingTaskId] = useState(null);
+  const [editForm, setEditForm] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -60,6 +62,47 @@ const AdminPage = ({ onLogout }) => {
     navigate("/login");
   };
 
+  const startEdit = (task) => {
+    setEditingTaskId(task.id);
+    setEditForm({
+      title: task.title,
+      description: task.description || "",
+      status: task.status,
+      priority: task.priority,
+      deadline: task.deadline ? task.deadline.split("T")[0] : "",
+    });
+  };
+
+  const handleEditChange = (e) => {
+    setEditForm({ ...editForm, [e.target.name]: e.target.value });
+  };
+
+  const saveEdit = async (taskId) => {
+    try {
+      const res = await axios.put(
+        `http://localhost:5000/api/admin/tasks/${taskId}`,
+        editForm,
+        { headers: getAuthHeaders() }
+      );
+      setTasks((prev) => prev.map((t) => (t.id === taskId ? res.data : t)));
+      setEditingTaskId(null);
+    } catch (err) {
+      console.error("Помилка при оновленні задачі:", err);
+    }
+  };
+
+  const deleteTask = async (taskId) => {
+    if (!window.confirm("Ви впевнені, що хочете видалити задачу?")) return;
+    try {
+      await axios.delete(`http://localhost:5000/api/admin/tasks/${taskId}`, {
+        headers: getAuthHeaders(),
+      });
+      setTasks((prev) => prev.filter((t) => t.id !== taskId));
+    } catch (err) {
+      console.error("Помилка при видаленні задачі:", err);
+    }
+  };
+
   return (
     <div>
       <button onClick={handleLogoutClick}>Вийти</button>
@@ -90,12 +133,50 @@ const AdminPage = ({ onLogout }) => {
 
       <h3>Усі задачі</h3>
       <ul>
-        {tasks.map((task) => (
-          <li key={task.id}>
-            <strong>{task.title}</strong> — {task.status} — Автор:{" "}
-            {task.User?.email || "Невідомо"}
-          </li>
-        ))}
+        {tasks.map((task) =>
+          editingTaskId === task.id ? (
+            <li key={task.id}>
+              <input
+                name="title"
+                value={editForm.title}
+                onChange={handleEditChange}
+              />
+              <input
+                name="deadline"
+                type="date"
+                value={editForm.deadline}
+                onChange={handleEditChange}
+              />
+              <select
+                name="status"
+                value={editForm.status}
+                onChange={handleEditChange}
+              >
+                <option value="not_started">Очікує</option>
+                <option value="in_progress">У процесі</option>
+                <option value="done">Виконано</option>
+              </select>
+              <select
+                name="priority"
+                value={editForm.priority}
+                onChange={handleEditChange}
+              >
+                <option value="low">Низький</option>
+                <option value="medium">Середній</option>
+                <option value="high">Високий</option>
+              </select>
+              <button onClick={() => saveEdit(task.id)}>Зберегти</button>
+              <button onClick={() => setEditingTaskId(null)}>Скасувати</button>
+            </li>
+          ) : (
+            <li key={task.id}>
+              <strong>{task.title}</strong> — {task.status} — Автор:{" "}
+              {task.User?.email || "Невідомо"}{" "}
+              <button onClick={() => startEdit(task)}>Редагувати</button>
+              <button onClick={() => deleteTask(task.id)}>Видалити</button>
+            </li>
+          )
+        )}
       </ul>
     </div>
   );
