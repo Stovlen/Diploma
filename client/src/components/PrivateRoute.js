@@ -16,6 +16,7 @@ const PrivateRoute = ({ isAuthenticated, requiredRole, children }) => {
         return <Navigate to="/tasks" replace />;
       }
     } catch (err) {
+      console.error("Помилка декодування токена:", err);
       return <Navigate to="/login" replace />;
     }
   }

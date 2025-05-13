@@ -52,3 +52,15 @@ exports.login = async (req, res) => {
     res.status(500).json({ error: "Помилка при вході" });
   }
 };
+
+// GET /api/profile
+exports.getProfile = async (req, res) => {
+  try {
+    const user = await User.findByPk(req.user.id, {
+      attributes: ["id", "email", "role", "createdAt"],
+    });
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ error: "Не вдалося отримати профіль" });
+  }
+};

@@ -1,40 +1,39 @@
 // src/App.js
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   BrowserRouter as Router,
   Routes,
   Route,
   Navigate,
 } from "react-router-dom";
+
 import LoginPage from "./pages/LoginPage";
 import TasksPage from "./pages/TasksPage";
 import AdminPage from "./pages/AdminPage";
 import NotFound from "./pages/NotFound";
 import PrivateRoute from "./components/PrivateRoute";
 import AdminRoute from "./components/AdminRoute";
+import ProfilePage from "./pages/ProfilePage";
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userRole, setUserRole] = useState("");
+  // ✅ 1. Стан одразу ініціалізується з localStorage
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    !!localStorage.getItem("token")
+  );
+  const [userRole, setUserRole] = useState(
+    localStorage.getItem("userRole") || ""
+  );
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    const role = localStorage.getItem("userRole");
-    if (token) {
-      setIsAuthenticated(true);
-      setUserRole(role);
-    }
-  }, []);
-
+  // ✅ 2. При логіні записуємо токен і роль
   const handleLogin = () => {
     setIsAuthenticated(true);
-    const role = localStorage.getItem("userRole");
-    setUserRole(role);
+    setUserRole(localStorage.getItem("userRole") || "");
   };
 
+  // ✅ 3. При виході очищаємо все
   const handleLogout = () => {
     localStorage.removeItem("token");
-    localStorage.removeItem("userRole"); // очищаємо роль при виході
+    localStorage.removeItem("userRole");
     setIsAuthenticated(false);
     setUserRole("");
   };
@@ -43,6 +42,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
+
         <Route
           path="/tasks"
           element={
@@ -51,6 +51,7 @@ function App() {
             </PrivateRoute>
           }
         />
+
         <Route
           path="/admin"
           element={
@@ -59,6 +60,16 @@ function App() {
             </AdminRoute>
           }
         />
+
+        <Route
+          path="/profile"
+          element={
+            <PrivateRoute isAuthenticated={isAuthenticated}>
+              <ProfilePage />
+            </PrivateRoute>
+          }
+        />
+
         <Route path="/" element={<Navigate to="/tasks" />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
