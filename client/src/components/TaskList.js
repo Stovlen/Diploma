@@ -132,7 +132,17 @@ const TaskList = () => {
               <button onClick={saveEdit}>Зберегти</button>
             </li>
           ) : (
-            <li key={task.id}>
+            <li
+              key={task.id}
+              style={{
+                color:
+                  task.deadline &&
+                  new Date(task.deadline) < new Date() &&
+                  task.status !== "done"
+                    ? "red"
+                    : "inherit",
+              }}
+            >
               <strong>{task.title}</strong> — {task.status}
               <br />
               <em>Опис:</em> {task.description}
