@@ -9,5 +9,7 @@ const authMiddleware = require("../middleware/authMiddleWare");
 
 router.get("/profile", authMiddleware, authController.getProfile);
 
+// 🆕 Додаємо оновлення профілю:
+router.put("/profile", authMiddleware, authController.updateProfile);
 
 module.exports = router;

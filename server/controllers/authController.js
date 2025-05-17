@@ -102,3 +102,32 @@ exports.getProfile = async (req, res) => {
     res.status(500).json({ error: "Не вдалося отримати профіль" });
   }
 };
+
+// PUT /api/profile — оновлення тільки роду діяльності
+exports.updateProfile = async (req, res) => {
+  try {
+    const user = await User.findByPk(req.user.id);
+    if (!user) {
+      return res.status(404).json({ error: "Користувача не знайдено" });
+    }
+
+    const { occupation } = req.body;
+
+    await user.update({ occupation });
+
+    res.json({
+      message: "Профіль оновлено",
+      user: {
+        id: user.id,
+        name: user.name,
+        gender: user.gender,
+        occupation: user.occupation,
+        email: user.email,
+        role: user.role,
+      },
+    });
+  } catch (err) {
+    console.error("❌ Помилка при оновленні профілю:", err);
+    res.status(500).json({ error: "Не вдалося оновити профіль" });
+  }
+};
