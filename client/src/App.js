@@ -1,4 +1,3 @@
-// src/App.js
 import React, { useState } from "react";
 import {
   BrowserRouter as Router,
@@ -8,6 +7,7 @@ import {
 } from "react-router-dom";
 
 import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage"; // ⬅️ ДОДАНО
 import TasksPage from "./pages/TasksPage";
 import AdminPage from "./pages/AdminPage";
 import NotFound from "./pages/NotFound";
@@ -16,7 +16,6 @@ import AdminRoute from "./components/AdminRoute";
 import ProfilePage from "./pages/ProfilePage";
 
 function App() {
-  // ✅ 1. Стан одразу ініціалізується з localStorage
   const [isAuthenticated, setIsAuthenticated] = useState(
     !!localStorage.getItem("token")
   );
@@ -24,13 +23,11 @@ function App() {
     localStorage.getItem("userRole") || ""
   );
 
-  // ✅ 2. При логіні записуємо токен і роль
   const handleLogin = () => {
     setIsAuthenticated(true);
     setUserRole(localStorage.getItem("userRole") || "");
   };
 
-  // ✅ 3. При виході очищаємо все
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("userRole");
@@ -42,7 +39,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
-
+        <Route path="/register" element={<RegisterPage />} /> {/* ⬅️ ДОДАНО */}
         <Route
           path="/tasks"
           element={
@@ -51,7 +48,6 @@ function App() {
             </PrivateRoute>
           }
         />
-
         <Route
           path="/admin"
           element={
@@ -60,7 +56,6 @@ function App() {
             </AdminRoute>
           }
         />
-
         <Route
           path="/profile"
           element={
@@ -69,7 +64,6 @@ function App() {
             </PrivateRoute>
           }
         />
-
         <Route path="/" element={<Navigate to="/tasks" />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

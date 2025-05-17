@@ -1,20 +1,27 @@
-// src/pages/RegisterPage.jsx
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 
 const RegisterPage = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirm, setConfirm] = useState("");
+  const [form, setForm] = useState({
+    name: "",
+    gender: "",
+    occupation: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
   const [error, setError] = useState("");
   const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
   const handleRegister = async (e) => {
     e.preventDefault();
 
-    if (password !== confirm) {
-      setError("Паролі не співпадають");
-      return;
+    if (form.password !== form.confirmPassword) {
+      return setError("Паролі не співпадають");
     }
 
     try {
@@ -23,7 +30,7 @@ const RegisterPage = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify(form),
       });
 
       const data = await response.json();
@@ -45,22 +52,44 @@ const RegisterPage = () => {
       {error && <p style={{ color: "red" }}>{error}</p>}
       <form onSubmit={handleRegister}>
         <input
+          type="text"
+          name="name"
+          placeholder="Ім'я"
+          value={form.name}
+          onChange={handleChange}
+        />
+        <input
+          type="text"
+          name="occupation"
+          placeholder="Рід діяльності"
+          value={form.occupation}
+          onChange={handleChange}
+        />
+        <select name="gender" value={form.gender} onChange={handleChange}>
+          <option value="">Оберіть стать</option>
+          <option value="Чоловік">Чоловік</option>
+          <option value="Жінка">Жінка</option>
+        </select>
+        <input
           type="email"
+          name="email"
           placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={form.email}
+          onChange={handleChange}
         />
         <input
           type="password"
+          name="password"
           placeholder="Пароль"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          value={form.password}
+          onChange={handleChange}
         />
         <input
           type="password"
+          name="confirmPassword"
           placeholder="Підтвердити пароль"
-          value={confirm}
-          onChange={(e) => setConfirm(e.target.value)}
+          value={form.confirmPassword}
+          onChange={handleChange}
         />
         <button type="submit">Зареєструватися</button>
       </form>

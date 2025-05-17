@@ -3,6 +3,9 @@ import axios from "axios";
 
 const RegisterForm = ({ onRegister }) => {
   const [form, setForm] = useState({
+    name: "",
+    gender: "",
+    occupation: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -16,20 +19,30 @@ const RegisterForm = ({ onRegister }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Валідація
-    if (!form.email || !form.password || !form.confirmPassword) {
+    if (
+      !form.name ||
+      !form.gender ||
+      !form.occupation ||
+      !form.email ||
+      !form.password ||
+      !form.confirmPassword
+    ) {
       return setError("Всі поля обов'язкові");
     }
+
     if (form.password !== form.confirmPassword) {
       return setError("Паролі не збігаються");
     }
 
     try {
       const res = await axios.post("http://localhost:5000/api/register", {
+        name: form.name,
+        gender: form.gender,
+        occupation: form.occupation,
         email: form.email,
         password: form.password,
       });
-      // Автоматично викликаємо вхід
+
       onRegister(res.data.token);
     } catch (err) {
       console.error("Помилка при реєстрації:", err);
@@ -39,9 +52,27 @@ const RegisterForm = ({ onRegister }) => {
 
   return (
     <form onSubmit={handleSubmit}>
-    
       {error && <p style={{ color: "red" }}>{error}</p>}
 
+      <input
+        type="text"
+        name="name"
+        placeholder="Ім'я"
+        value={form.name}
+        onChange={handleChange}
+      />
+      <input
+        type="text"
+        name="occupation"
+        placeholder="Рід діяльності"
+        value={form.occupation}
+        onChange={handleChange}
+      />
+      <select name="gender" value={form.gender} onChange={handleChange}>
+        <option value="">Оберіть стать</option>
+        <option value="male">Чоловік</option>
+        <option value="female">Жінка</option>
+      </select>
       <input
         type="email"
         name="email"

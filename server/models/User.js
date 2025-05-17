@@ -19,6 +19,18 @@ const User = sequelize.define("User", {
     allowNull: false,
     defaultValue: "user", // "user" або "admin"
   },
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  gender: {
+    type: DataTypes.ENUM("Чоловік", "Жінка"),
+    allowNull: true,
+  },
+  occupation: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
 });
 
 module.exports = User;

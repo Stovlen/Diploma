@@ -21,6 +21,15 @@ const ProfilePage = () => {
     <div>
       <h2>Профіль користувача</h2>
       <p>
+        <strong>Ім’я:</strong> {user.name || "—"}
+      </p>
+      <p>
+        <strong>Стать:</strong> {user.gender || "—"}
+      </p>
+      <p>
+        <strong>Рід діяльності:</strong> {user.occupation || "—"}
+      </p>
+      <p>
         <strong>Email:</strong> {user.email}
       </p>
       <p>
