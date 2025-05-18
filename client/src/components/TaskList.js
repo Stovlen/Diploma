@@ -10,19 +10,45 @@ const TaskList = () => {
   const [filterStatus, setFilterStatus] = useState("all");
   const [filterPriority, setFilterPriority] = useState("all");
   const [filterCategory, setFilterCategory] = useState("all");
+  const [reminders, setReminders] = useState([]);
 
+  
   useEffect(() => {
+    const fetchTasks = () => {
+      axios
+        .get("http://localhost:5000/api/tasks", {
+          headers: getAuthHeaders(),
+        })
+        .then((res) => {
+          setTasks(res.data);
+          checkReminders(res.data);
+        })
+        .catch((err) => console.error("Помилка при завантаженні задач:", err));
+    };
+
     fetchTasks();
   }, []);
+  
+  
+  const checkReminders = (taskList) => {
+    const today = new Date();
+    const tomorrow = new Date();
+    tomorrow.setDate(today.getDate() + 1);
 
-  const fetchTasks = () => {
-    axios
-      .get("http://localhost:5000/api/tasks", {
-        headers: getAuthHeaders(),
-      })
-      .then((res) => setTasks(res.data))
-      .catch((err) => console.error("Помилка при завантаженні задач:", err));
+    const filtered = taskList.filter((task) => {
+      if (!task.deadline || task.status === "done") return false;
+
+      const deadlineDate = new Date(task.deadline);
+      const isToday = deadlineDate.toDateString() === today.toDateString();
+      const isTomorrow =
+        deadlineDate.toDateString() === tomorrow.toDateString();
+
+      return isToday || isTomorrow;
+    });
+
+    setReminders(filtered);
   };
+  
 
   const handleTaskAdded = (newTask) => {
     setTasks([...tasks, newTask]);
@@ -120,6 +146,22 @@ const TaskList = () => {
       </label>
 
       <ul>
+        {reminders.length > 0 && (
+          <div
+            style={{
+              backgroundColor: "#fff3cd",
+              border: "1px solid #ffeeba",
+              padding: "10px",
+              borderRadius: "5px",
+              marginBottom: "15px",
+            }}
+          >
+            <strong>Нагадування:</strong> У вас {reminders.length} задач
+            {reminders.length === 1 ? "а" : "і"} з дедлайном сьогодні або
+            завтра.
+          </div>
+        )}
+
         {filteredTasks.map((task) =>
           editingTask === task.id ? (
             <li key={task.id}>
