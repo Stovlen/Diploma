@@ -144,3 +144,76 @@ exports.getTaskSuggestions = async (req, res) => {
     res.status(500).json({ error: "AI не зміг обробити задачі" });
   }
 };
+
+// GET /api/tasks/analytics
+exports.getAnalytics = async (req, res) => {
+  try {
+    const tasks = await Task.findAll({
+      where: { userId: req.user.id },
+    });
+
+    const user = await User.findByPk(req.user.id, {
+      attributes: ["name", "gender", "occupation"],
+    });
+
+    const systemPrompt = `
+Ти — аналітик продуктивності. Користувач передав тобі список своїх задач та свій профіль:
+- Ім’я: ${user.name || "не вказано"}
+- Стать: ${user.gender || "не вказано"}
+- Рід діяльності: ${user.occupation || "не вказано"}
+
+🎯 Завдання:
+1. Звернись до користувача особисто, враховуючи стать (наприклад, "Олександре", "Оксано").
+2. Проаналізуй виконані, прострочені та активні задачі.
+3. Виділи найактивніші категорії.
+4. Зроби дружню, теплу пораду відповідно до роду діяльності.
+
+📦 Формат відповіді (тільки JSON!):
+{
+  "summary": "Розгорнута порада (звертаючись до користувача)",
+  "metrics": {
+    "total": 5,
+    "completed": 2,
+    "overdue": 1,
+    "inProgress": 2,
+    "categories": {
+      "навчання": 2,
+      "побут": 1
+    }
+  }
+}
+`.trim();
+
+    const response = await axios.post(
+      "https://api.openai.com/v1/chat/completions",
+      {
+        model: "gpt-3.5-turbo",
+        messages: [
+          {
+            role: "system",
+            content: systemPrompt,
+          },
+          {
+            role: "user",
+            content: JSON.stringify(tasks),
+          },
+        ],
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.AI_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const content = response.data.choices[0].message.content;
+
+    const parsed = JSON.parse(content); // Парсимо тільки якщо це дійсно JSON
+
+    res.json(parsed);
+  } catch (err) {
+    console.error("❌ Аналітика AI помилка:", err?.response?.data || err.message);
+    res.status(500).json({ error: "Не вдалося отримати аналітику" });
+  }
+};
