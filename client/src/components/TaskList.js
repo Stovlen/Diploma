@@ -9,6 +9,7 @@ const TaskList = () => {
   const [editForm, setEditForm] = useState({});
   const [filterStatus, setFilterStatus] = useState("all");
   const [filterPriority, setFilterPriority] = useState("all");
+  const [filterCategory, setFilterCategory] = useState("all");
 
   useEffect(() => {
     fetchTasks();
@@ -57,12 +58,18 @@ const TaskList = () => {
       .catch((err) => console.error("Помилка при оновленні задачі:", err));
   };
 
+  // 🔍 Витяг унікальних категорій для фільтра
+  const categories = [...new Set(tasks.map((t) => t.category).filter(Boolean))];
+
   const filteredTasks = tasks
     .filter((task) =>
       filterStatus === "all" ? true : task.status === filterStatus
     )
     .filter((task) =>
       filterPriority === "all" ? true : task.priority === filterPriority
+    )
+    .filter((task) =>
+      filterCategory === "all" ? true : task.category === filterCategory
     );
 
   return (
@@ -93,6 +100,22 @@ const TaskList = () => {
           <option value="low">Низький</option>
           <option value="medium">Середній</option>
           <option value="high">Високий</option>
+        </select>
+      </label>
+
+      <label>
+        {" "}
+        Фільтр за категорією:{" "}
+        <select
+          value={filterCategory}
+          onChange={(e) => setFilterCategory(e.target.value)}
+        >
+          <option value="all">Усі</option>
+          {categories.map((cat) => (
+            <option key={cat} value={cat}>
+              {cat}
+            </option>
+          ))}
         </select>
       </label>
 
@@ -129,6 +152,12 @@ const TaskList = () => {
                 <option value="medium">Середній</option>
                 <option value="high">Високий</option>
               </select>
+              <input
+                name="category"
+                placeholder="Категорія"
+                value={editForm.category || ""}
+                onChange={handleEditChange}
+              />
               <button onClick={saveEdit}>Зберегти</button>
             </li>
           ) : (
@@ -149,6 +178,12 @@ const TaskList = () => {
               <br />
               <em>Пріоритет:</em> {task.priority}
               <br />
+              {task.category && (
+                <>
+                  <em>Категорія:</em> {task.category}
+                  <br />
+                </>
+              )}
               <em>Створено:</em>{" "}
               {new Date(task.createdAt).toLocaleDateString("uk-UA")}
               {task.deadline && (

@@ -4,12 +4,18 @@ const User = require("../models/User");
 // GET /api/tasks — лише задачі користувача
 exports.getAllTasks = async (req, res) => {
   try {
-    const tasks = await Task.findAll({ where: { userId: req.user.id } });
+    const filters = { userId: req.user.id };
+    if (req.query.category) {
+      filters.category = req.query.category;
+    }
+
+    const tasks = await Task.findAll({ where: filters });
     res.json(tasks);
   } catch (error) {
     res.status(500).json({ error: "Не вдалося отримати задачі" });
   }
 };
+
 
 // GET /api/tasks/:id — конкретна задача, якщо вона належить користувачу
 exports.getTaskById = async (req, res) => {

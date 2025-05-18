@@ -16,6 +16,10 @@ const Task = sequelize.define("Task", {
     type: DataTypes.ENUM("not_started", "in_progress", "done"),
     defaultValue: "not_started",
   },
+  category: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
   userId: {
     type: DataTypes.INTEGER,
     allowNull: false,

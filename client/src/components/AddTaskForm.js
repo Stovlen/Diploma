@@ -9,6 +9,7 @@ const AddTaskForm = ({ onTaskAdded }) => {
     deadline: "",
     priority: "low",
     status: "not_started",
+    category: "", // 🆕 нове поле
   });
   const [error, setError] = useState("");
 
@@ -51,6 +52,7 @@ const AddTaskForm = ({ onTaskAdded }) => {
         deadline: "",
         priority: "low",
         status: "not_started",
+        category: "", // 🧹 очищаємо після сабміту
       });
     } catch (err) {
       console.error("Помилка при створенні задачі:", err);
@@ -94,6 +96,15 @@ const AddTaskForm = ({ onTaskAdded }) => {
         <option value="in_progress">У процесі</option>
         <option value="done">Виконано</option>
       </select>
+
+      <input
+        type="text"
+        name="category"
+        placeholder="Категорія (опціонально)"
+        value={form.category}
+        onChange={handleChange}
+      />
+
       <button type="submit">Створити</button>
     </form>
   );
