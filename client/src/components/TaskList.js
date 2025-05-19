@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import AddTaskForm from "./AddTaskForm";
 import { getAuthHeaders } from "../utils/authHeaders";
+import GenerateTaskForm from "./GenerateTaskForm"; // 🟢 Додано імпорт
 
 const TaskList = () => {
   const [tasks, setTasks] = useState([]);
@@ -12,7 +13,6 @@ const TaskList = () => {
   const [filterCategory, setFilterCategory] = useState("all");
   const [reminders, setReminders] = useState([]);
 
-  
   useEffect(() => {
     const fetchTasks = () => {
       axios
@@ -28,8 +28,7 @@ const TaskList = () => {
 
     fetchTasks();
   }, []);
-  
-  
+
   const checkReminders = (taskList) => {
     const today = new Date();
     const tomorrow = new Date();
@@ -48,7 +47,6 @@ const TaskList = () => {
 
     setReminders(filtered);
   };
-  
 
   const handleTaskAdded = (newTask) => {
     setTasks([...tasks, newTask]);
@@ -84,7 +82,6 @@ const TaskList = () => {
       .catch((err) => console.error("Помилка при оновленні задачі:", err));
   };
 
-  // 🔍 Витяг унікальних категорій для фільтра
   const categories = [...new Set(tasks.map((t) => t.category).filter(Boolean))];
 
   const filteredTasks = tasks
@@ -100,8 +97,8 @@ const TaskList = () => {
 
   return (
     <>
+      <GenerateTaskForm onTaskGenerated={handleTaskAdded} /> {/* 🟢 Додано */}
       <AddTaskForm onTaskAdded={handleTaskAdded} />
-
       <label>
         Фільтр за статусом:{" "}
         <select
@@ -114,7 +111,6 @@ const TaskList = () => {
           <option value="done">Виконано</option>
         </select>
       </label>
-
       <label>
         {" "}
         Фільтр за пріоритетом:{" "}
@@ -128,7 +124,6 @@ const TaskList = () => {
           <option value="high">Високий</option>
         </select>
       </label>
-
       <label>
         {" "}
         Фільтр за категорією:{" "}
@@ -144,7 +139,6 @@ const TaskList = () => {
           ))}
         </select>
       </label>
-
       <ul>
         {reminders.length > 0 && (
           <div
