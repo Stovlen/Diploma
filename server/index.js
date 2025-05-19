@@ -39,10 +39,12 @@ sequelize
 const authRoutes = require("./routes/authRoutes");
 const taskRoutes = require("./routes/taskRoutes");
 const adminRoutes = require("./routes/adminRoutes"); // перенесено сюди
+const aiRoutes = require("./routes/aiRoutes");
 
 app.use("/api", authRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/admin", adminRoutes); // ✅ тепер app вже ініціалізовано
+app.use("/api/ai", aiRoutes);
 
 // Запуск сервера
 const PORT = process.env.PORT || 5000;
