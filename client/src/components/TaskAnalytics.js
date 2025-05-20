@@ -1,54 +1,58 @@
+// src/components/TaskAnalytics.js
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { getAuthHeaders } from "../utils/authHeaders";
+import {
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
+
+const COLORS = ["#4caf50", "#ff9800", "#f44336"]; // Готово, У процесі, Прострочено
 
 const TaskAnalytics = () => {
-  const [analytics, setAnalytics] = useState(null);
-  const [error, setError] = useState("");
+  const [data, setData] = useState(null);
 
   useEffect(() => {
     axios
       .get("http://localhost:5000/api/tasks/analytics", {
         headers: getAuthHeaders(),
       })
-      .then((res) => setAnalytics(res.data))
-      .catch((err) => {
-        console.error("Аналітика помилка:", err);
-        setError("Не вдалося отримати аналітику");
-      });
+      .then((res) => setData(res.data))
+      .catch((err) => console.error("Помилка при отриманні аналітики:", err));
   }, []);
 
-  if (error) return <p style={{ color: "red" }}>{error}</p>;
-  if (!analytics) return <p>Завантаження аналітики...</p>;
+  if (!data) return <p>Завантаження аналітики...</p>;
 
-  const { summary, metrics } = analytics;
+  const pieData = [
+    { name: "Виконано", value: data.metrics.completed },
+    { name: "У процесі", value: data.metrics.inProgress },
+    { name: "Прострочено", value: data.metrics.overdue },
+  ];
 
   return (
-    <div
-      style={{
-        backgroundColor: "#e3f2fd",
-        border: "1px solid #90caf9",
-        padding: "12px",
-        borderRadius: "5px",
-        marginTop: "16px",
-      }}
-    >
-      <strong>Аналітика продуктивності:</strong>
-      <p style={{ marginTop: "8px" }}>{summary}</p>
-      <ul>
-        <li>Усього задач: {metrics.total}</li>
-        <li>Виконано: {metrics.completed}</li>
-        <li>У процесі: {metrics.inProgress}</li>
-        <li>Прострочено: {metrics.overdue}</li>
-      </ul>
-      <p>Найпопулярніші категорії:</p>
-      <ul>
-        {Object.entries(metrics.categories).map(([cat, count]) => (
-          <li key={cat}>
-            {cat}: {count}
-          </li>
-        ))}
-      </ul>
+    <div style={{ maxWidth: "500px", margin: "0 auto" }}>
+      <h2>Статус задач</h2>
+      <ResponsiveContainer width="100%" height={300}>
+        <PieChart>
+          <Pie
+            data={pieData}
+            dataKey="value"
+            nameKey="name"
+            outerRadius={100}
+            label
+          >
+            {pieData.map((entry, index) => (
+              <Cell key={entry.name} fill={COLORS[index % COLORS.length]} />
+            ))}
+          </Pie>
+          <Tooltip />
+          <Legend />
+        </PieChart>
+      </ResponsiveContainer>
     </div>
   );
 };
