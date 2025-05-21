@@ -15,6 +15,9 @@ import PrivateRoute from "./components/PrivateRoute";
 import AdminRoute from "./components/AdminRoute";
 import ProfilePage from "./pages/ProfilePage";
 
+import TipsPage from "./pages/TipsPage";
+import DashboardPage from "./pages/DashboardPage";
+
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(
     !!localStorage.getItem("token")
@@ -64,6 +67,8 @@ function App() {
             </PrivateRoute>
           }
         />
+        <Route path="/tips" element={<TipsPage />} />
+        <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/" element={<Navigate to="/login" />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

@@ -1,24 +1,21 @@
-// src/pages/TasksPage.jsx
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import TaskList from "../components/TaskList";
-import DailyTip from "../components/DailyTip";
-import TaskSuggestion from "../components/TaskSuggestion"; // ✅ уже імпортований
-import TaskAnalytics from "../components/TaskAnalytics";
-import TaskPriorityChart from "../components/TaskPriorityChart";
-import TaskPerformanceChart from "../components/TaskPerformanceChart";
-
-
 
 const TasksPage = ({ onLogout }) => {
+  const navigate = useNavigate();
+
   return (
     <div>
       <button onClick={onLogout}>Вийти</button>
       <h1>Задачі</h1>
-      <DailyTip /> {/* ✅ Щоденна порада */}
-      <TaskSuggestion /> {/* ✅ Рекомендація від ШІ */}
-      <TaskAnalytics />
-      <TaskPriorityChart />
-      <TaskPerformanceChart />
+
+      {/* 🔘 Кнопки для переходу на окремі сторінки */}
+      <div style={{ marginBottom: "1rem" }}>
+        <button onClick={() => navigate("/tips")}>ШІ поради</button>
+        <button onClick={() => navigate("/dashboard")}>Статистика</button>
+      </div>
+
       <TaskList />
     </div>
   );

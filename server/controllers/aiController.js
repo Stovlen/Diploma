@@ -72,14 +72,14 @@ exports.generateTaskFromPrompt = async (req, res) => {
 2. Сформуй задачу у вигляді:
    - title: коротка назва
    - description: уточнення, що саме потрібно зробити
-   - deadline: дата завершення (ISO-формат, максимум через 7 днів)
    - priority: low / medium / high (оціни важливість по змісту)
+
+❗ Не вказуй дедлайн. Його встановить система автоматично.
 
 📦 Формат відповіді: лише JSON
 {
   "title": "...",
   "description": "...",
-  "deadline": "2025-05-25T00:00:00.000Z",
   "priority": "medium"
 }
 
@@ -108,10 +108,15 @@ exports.generateTaskFromPrompt = async (req, res) => {
 
     const parsed = JSON.parse(response.data.choices[0].message.content);
 
-    // ✅ Зберігаємо задачу в базу
+    // Поточна дата у форматі ISO
+    const today = new Date().toISOString().split("T")[0];
+
     const createdTask = await Task.create({
-      ...parsed,
-      status: "not_started", // або залишити якщо приходить від ШІ
+      title: parsed.title,
+      description: parsed.description,
+      priority: parsed.priority,
+      deadline: today,
+      status: "not_started",
       userId: req.user.id,
     });
 
