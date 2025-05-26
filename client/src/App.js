@@ -18,6 +18,8 @@ import ProfilePage from "./pages/ProfilePage";
 import TipsPage from "./pages/TipsPage";
 import DashboardPage from "./pages/DashboardPage";
 
+import CalendarView from "./pages/CalendarView";
+
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(
     !!localStorage.getItem("token")
@@ -69,6 +71,14 @@ function App() {
         />
         <Route path="/tips" element={<TipsPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
+        <Route
+          path="/calendar"
+          element={
+            <PrivateRoute isAuthenticated={isAuthenticated}>
+              <CalendarView />
+            </PrivateRoute>
+          }
+        />
         <Route path="/" element={<Navigate to="/login" />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

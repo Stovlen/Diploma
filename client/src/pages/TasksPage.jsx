@@ -10,10 +10,11 @@ const TasksPage = ({ onLogout }) => {
       <button onClick={onLogout}>Вийти</button>
       <h1>Задачі</h1>
 
-      {/* 🔘 Кнопки для переходу на окремі сторінки */}
+    
       <div style={{ marginBottom: "1rem" }}>
         <button onClick={() => navigate("/tips")}>ШІ поради</button>
         <button onClick={() => navigate("/dashboard")}>Статистика</button>
+        <button onClick={() => navigate("/calendar")}>Календар</button>{" "}
       </div>
 
       <TaskList />
