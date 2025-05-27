@@ -1,6 +1,8 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const User = require("../models/User");
+const nodemailer = require("nodemailer");
+const crypto = require("crypto");
 require("dotenv").config();
 
 // Генерація JWT токена
@@ -16,7 +18,7 @@ const generateToken = (user) => {
   );
 };
 
-// POST /api/register
+
 exports.register = async (req, res) => {
   const { email, password, name, gender, occupation, role } = req.body;
 
@@ -34,8 +36,30 @@ exports.register = async (req, res) => {
       name: name || "Адмін",
       gender: gender || null,
       occupation: occupation || null,
-      role: role || "user", // ← дозволяємо передати 'admin'
+      role: role || "user",
     });
+
+    // ✅ Надсилаємо підтвердження на пошту
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    await transporter.sendMail({
+      from: `"TaskMaster" <${process.env.EMAIL_USER}>`,
+      to: user.email,
+      subject: "Вітаємо в TaskMaster!",
+      html: `
+        <h3>Вітаємо, ${user.name || "користувачу"}!</h3>
+        <p>Ви успішно зареєструвались у <strong>TaskMaster</strong>.</p>
+        <p>Успіхів у керуванні вашими задачами!</p>
+      `,
+    });
+
+    console.log(`✅ Email надіслано користувачу ${user.email}`);
 
     const token = generateToken(user);
     res.status(201).json({
@@ -50,7 +74,7 @@ exports.register = async (req, res) => {
       token,
     });
   } catch (err) {
-    console.error("Помилка при реєстрації:", err);
+    console.error("❌ Помилка при реєстрації:", err);
     res.status(500).json({ error: "Помилка при реєстрації" });
   }
 };
@@ -130,4 +154,59 @@ exports.updateProfile = async (req, res) => {
     console.error("❌ Помилка при оновленні профілю:", err);
     res.status(500).json({ error: "Не вдалося оновити профіль" });
   }
+};
+
+
+exports.forgotPassword = async (req, res) => {
+  const { email } = req.body;
+  const user = await User.findOne({ where: { email } });
+
+  if (!user) return res.status(404).json({ error: "Користувача не знайдено" });
+
+  const token = crypto.randomBytes(32).toString("hex");
+  const resetTokenExpires = new Date(Date.now() + 3600000); // 1 год
+
+  await user.update({ resetToken: token, resetTokenExpires });
+
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    },
+  });
+
+  const resetUrl = `http://localhost:3000/reset-password/${token}`;
+
+  await transporter.sendMail({
+    from: '"TaskMaster" <noreply@taskmaster.com>',
+    to: user.email,
+    subject: "Скидання пароля",
+    html: `<p>Натисніть <a href="${resetUrl}">тут</a>, щоб скинути пароль.</p>`,
+  });
+
+  res.json({ message: "Інструкції надіслано на email" });
+};
+
+exports.resetPassword = async (req, res) => {
+  const { token } = req.params;
+  const { newPassword } = req.body;
+
+  const user = await User.findOne({
+    where: {
+      resetToken: token,
+      resetTokenExpires: { [Op.gt]: new Date() },
+    },
+  });
+
+  if (!user)
+    return res.status(400).json({ error: "Недійсний або прострочений токен" });
+
+  await user.update({
+    password: newPassword,
+    resetToken: null,
+    resetTokenExpires: null,
+  });
+
+  res.json({ message: "Пароль успішно оновлено" });
 };
