@@ -3,6 +3,8 @@ const bcrypt = require("bcrypt");
 const User = require("../models/User");
 const nodemailer = require("nodemailer");
 const crypto = require("crypto");
+const { Op } = require("sequelize");
+
 require("dotenv").config();
 
 // Генерація JWT токена
@@ -178,14 +180,20 @@ exports.forgotPassword = async (req, res) => {
 
   const resetUrl = `http://localhost:3000/reset-password/${token}`;
 
-  await transporter.sendMail({
-    from: '"TaskMaster" <noreply@taskmaster.com>',
-    to: user.email,
-    subject: "Скидання пароля",
-    html: `<p>Натисніть <a href="${resetUrl}">тут</a>, щоб скинути пароль.</p>`,
-  });
+  try {
+    const info = await transporter.sendMail({
+      from: '"TaskMaster" <noreply@taskmaster.com>',
+      to: user.email,
+      subject: "Скидання пароля",
+      html: `<p>Натисніть <a href="${resetUrl}">тут</a>, щоб скинути пароль.</p>`,
+    });
 
-  res.json({ message: "Інструкції надіслано на email" });
+    console.log("📧 Лист для скидання пароля надіслано:", info.response);
+    res.json({ message: "Інструкції надіслано на email" });
+  } catch (error) {
+    console.error("❌ Помилка надсилання email:", error);
+    res.status(500).json({ error: "Не вдалося надіслати листа" });
+  }
 };
 
 exports.resetPassword = async (req, res) => {
@@ -202,8 +210,9 @@ exports.resetPassword = async (req, res) => {
   if (!user)
     return res.status(400).json({ error: "Недійсний або прострочений токен" });
 
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
   await user.update({
-    password: newPassword,
+    password: hashedPassword,
     resetToken: null,
     resetTokenExpires: null,
   });
