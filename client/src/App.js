@@ -5,17 +5,20 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
+import "bootstrap/dist/css/bootstrap.min.css";
+
 
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage"; // ⬅️ ДОДАНО
 import ResetPasswordPage from "./pages/ResetPasswordPage";
-import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import ForgotPasswordPage from "./pages/ForgotPassword";
 import TasksPage from "./pages/TasksPage";
 import AdminPage from "./pages/AdminPage";
 import NotFound from "./pages/NotFound";
 import PrivateRoute from "./components/PrivateRoute";
 import AdminRoute from "./components/AdminRoute";
 import ProfilePage from "./pages/ProfilePage";
+
 
 import TipsPage from "./pages/TipsPage";
 import DashboardPage from "./pages/DashboardPage";

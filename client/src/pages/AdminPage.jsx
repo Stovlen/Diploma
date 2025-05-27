@@ -1,4 +1,3 @@
-// src/pages/AdminPage.jsx
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -104,76 +103,141 @@ const AdminPage = ({ onLogout }) => {
   };
 
   return (
-    <div>
-      <button onClick={handleLogoutClick}>Вийти</button>
-      <h2>Панель Адміністратора</h2>
+    <div className="container py-4">
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h2 className="mb-0">Панель Адміністратора</h2>
+        <button onClick={handleLogoutClick} className="btn btn-danger">
+          Вийти
+        </button>
+      </div>
 
-      <h3>Користувачі</h3>
-      <ul>
+      <h4>Користувачі</h4>
+      <ul className="list-group mb-4">
         {users.map((user) => (
-          <li key={user.id}>
-            {user.email} — {user.role}
+          <li key={user.id} className="list-group-item">
+            {user.email} —{" "}
+            <span className="badge bg-secondary text-uppercase">
+              {user.role}
+            </span>
           </li>
         ))}
       </ul>
 
-      <h3>Фільтрація задач за email</h3>
-      <form onSubmit={handleFilterSubmit}>
-        <input
-          type="text"
-          placeholder="user@example.com"
-          value={filterEmail}
-          onChange={handleFilterChange}
-        />
-        <button type="submit">Фільтрувати</button>
-        <button type="button" onClick={handleClearFilter}>
-          Очистити фільтр
-        </button>
+      <h4>Фільтрація задач за email</h4>
+      <form onSubmit={handleFilterSubmit} className="row g-2 mb-4">
+        <div className="col-md-6">
+          <input
+            type="text"
+            className="form-control"
+            placeholder="user@example.com"
+            value={filterEmail}
+            onChange={handleFilterChange}
+          />
+        </div>
+        <div className="col-auto">
+          <button type="submit" className="btn btn-primary">
+            Фільтрувати
+          </button>
+        </div>
+        <div className="col-auto">
+          <button
+            type="button"
+            onClick={handleClearFilter}
+            className="btn btn-secondary"
+          >
+            Очистити
+          </button>
+        </div>
       </form>
 
-      <h3>Усі задачі</h3>
-      <ul>
+      <h4>Усі задачі</h4>
+      <ul className="list-group">
         {tasks.map((task) =>
           editingTaskId === task.id ? (
-            <li key={task.id}>
-              <input
-                name="title"
-                value={editForm.title}
-                onChange={handleEditChange}
-              />
-              <input
-                name="deadline"
-                type="date"
-                value={editForm.deadline}
-                onChange={handleEditChange}
-              />
-              <select
-                name="status"
-                value={editForm.status}
-                onChange={handleEditChange}
-              >
-                <option value="not_started">Очікує</option>
-                <option value="in_progress">У процесі</option>
-                <option value="done">Виконано</option>
-              </select>
-              <select
-                name="priority"
-                value={editForm.priority}
-                onChange={handleEditChange}
-              >
-                <option value="low">Низький</option>
-                <option value="medium">Середній</option>
-                <option value="high">Високий</option>
-              </select>
-              <button onClick={() => saveEdit(task.id)}>Зберегти</button>
-              <button onClick={() => setEditingTaskId(null)}>Скасувати</button>
+            <li key={task.id} className="list-group-item">
+              <div className="row g-2">
+                <div className="col-md-3">
+                  <input
+                    name="title"
+                    className="form-control"
+                    value={editForm.title}
+                    onChange={handleEditChange}
+                  />
+                </div>
+                <div className="col-md-2">
+                  <input
+                    name="deadline"
+                    type="date"
+                    className="form-control"
+                    value={editForm.deadline}
+                    onChange={handleEditChange}
+                  />
+                </div>
+                <div className="col-md-2">
+                  <select
+                    name="status"
+                    className="form-select"
+                    value={editForm.status}
+                    onChange={handleEditChange}
+                  >
+                    <option value="not_started">Очікує</option>
+                    <option value="in_progress">У процесі</option>
+                    <option value="done">Виконано</option>
+                  </select>
+                </div>
+                <div className="col-md-2">
+                  <select
+                    name="priority"
+                    className="form-select"
+                    value={editForm.priority}
+                    onChange={handleEditChange}
+                  >
+                    <option value="low">Низький</option>
+                    <option value="medium">Середній</option>
+                    <option value="high">Високий</option>
+                  </select>
+                </div>
+                <div className="col-md-3 d-flex gap-2">
+                  <button
+                    className="btn btn-success"
+                    onClick={() => saveEdit(task.id)}
+                  >
+                    Зберегти
+                  </button>
+                  <button
+                    className="btn btn-outline-secondary"
+                    onClick={() => setEditingTaskId(null)}
+                  >
+                    Скасувати
+                  </button>
+                </div>
+              </div>
             </li>
           ) : (
-            <li key={task.id}>
-              <strong>{task.title}</strong> — {task.status} — Автор:{" "}
-              {task.User?.email || "Невідомо"}{" "}
-              <button onClick={() => startEdit(task)}>Редагувати</button>
-              <button onClick={() => deleteTask(task.id)}>Видалити</button>
+            <li
+              key={task.id}
+              className="list-group-item d-flex justify-content-between align-items-center"
+            >
+              <div>
+                <strong>{task.title}</strong> — {task.status} —{" "}
+                <small className="text-muted">
+                  Автор: {task.User?.email || "Невідомо"}
+                </small>
+              </div>
+              <div className="btn-group">
+                <button
+                  className="btn btn-sm btn-outline-primary"
+                  onClick={() => startEdit(task)}
+                >
+                  Редагувати
+                </button>
+                <button
+                  className="btn btn-sm btn-outline-danger"
+                  onClick={() => deleteTask(task.id)}
+                >
+                  Видалити
+                </button>
+              </div>
             </li>
           )
         )}

@@ -23,19 +23,22 @@ const DailyTip = () => {
       });
   }, []);
 
-  if (loading) return <p>Завантаження поради...</p>;
-  if (error) return <p style={{ color: "red" }}>{error}</p>;
+  if (loading)
+    return (
+      <div className="alert alert-info text-center" role="alert">
+        Завантаження поради...
+      </div>
+    );
+
+  if (error)
+    return (
+      <div className="alert alert-danger text-center" role="alert">
+        {error}
+      </div>
+    );
 
   return (
-    <div
-      style={{
-        backgroundColor: "#e7f3ff",
-        border: "1px solid #bee3f8",
-        padding: "10px",
-        borderRadius: "6px",
-        marginBottom: "15px",
-      }}
-    >
+    <div className="alert alert-primary" role="alert">
       <strong>Порада на сьогодні:</strong> {tip}
     </div>
   );

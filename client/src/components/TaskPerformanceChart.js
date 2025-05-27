@@ -1,4 +1,3 @@
-// src/components/TaskPerformanceChart.js
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {
@@ -9,6 +8,7 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
+  ResponsiveContainer,
 } from "recharts";
 import { getAuthHeaders } from "../utils/authHeaders";
 
@@ -25,7 +25,6 @@ const TaskPerformanceChart = () => {
           (task) => task.status === "done"
         );
 
-        // Групуємо по датах виконання (createdAt)
         const counts = {};
         completedTasks.forEach((task) => {
           const date = new Date(task.createdAt).toLocaleDateString("uk-UA");
@@ -43,21 +42,26 @@ const TaskPerformanceChart = () => {
   }, []);
 
   return (
-    <div style={{ textAlign: "center", marginTop: "40px" }}>
-      <h3>Динаміка продуктивності</h3>
-      <LineChart width={600} height={300} data={data}>
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="date" />
-        <YAxis allowDecimals={false} />
-        <Tooltip />
-        <Legend />
-        <Line
-          type="monotone"
-          dataKey="completed"
-          stroke="#82ca9d"
-          name="Виконано задач"
-        />
-      </LineChart>
+    <div className="mt-5">
+      <h4 className="text-center mb-4">📈 Динаміка продуктивності</h4>
+
+      <div className="card shadow p-3">
+        <ResponsiveContainer width="100%" height={300}>
+          <LineChart data={data}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="date" />
+            <YAxis allowDecimals={false} />
+            <Tooltip />
+            <Legend />
+            <Line
+              type="monotone"
+              dataKey="completed"
+              stroke="#198754"
+              name="Виконано задач"
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 };

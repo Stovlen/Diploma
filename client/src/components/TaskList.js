@@ -96,147 +96,177 @@ const TaskList = () => {
     );
 
   return (
-    <>
-      <GenerateTaskForm onTaskGenerated={handleTaskAdded} /> {/* 🟢 Додано */}
+    <div className="mt-4">
+      <GenerateTaskForm onTaskGenerated={handleTaskAdded} />
       <AddTaskForm onTaskAdded={handleTaskAdded} />
-      <label>
-        Фільтр за статусом:{" "}
-        <select
-          value={filterStatus}
-          onChange={(e) => setFilterStatus(e.target.value)}
-        >
-          <option value="all">Усі</option>
-          <option value="not_started">Очікує</option>
-          <option value="in_progress">У процесі</option>
-          <option value="done">Виконано</option>
-        </select>
-      </label>
-      <label>
-        {" "}
-        Фільтр за пріоритетом:{" "}
-        <select
-          value={filterPriority}
-          onChange={(e) => setFilterPriority(e.target.value)}
-        >
-          <option value="all">Усі</option>
-          <option value="low">Низький</option>
-          <option value="medium">Середній</option>
-          <option value="high">Високий</option>
-        </select>
-      </label>
-      <label>
-        {" "}
-        Фільтр за категорією:{" "}
-        <select
-          value={filterCategory}
-          onChange={(e) => setFilterCategory(e.target.value)}
-        >
-          <option value="all">Усі</option>
-          {categories.map((cat) => (
-            <option key={cat} value={cat}>
-              {cat}
-            </option>
-          ))}
-        </select>
-      </label>
-      <ul>
-        {reminders.length > 0 && (
-          <div
-            style={{
-              backgroundColor: "#fff3cd",
-              border: "1px solid #ffeeba",
-              padding: "10px",
-              borderRadius: "5px",
-              marginBottom: "15px",
-            }}
-          >
-            <strong>Нагадування:</strong> У вас {reminders.length} задач
-            {reminders.length === 1 ? "а" : "і"} з дедлайном сьогодні або
-            завтра.
-          </div>
-        )}
 
+      <div className="row g-2 my-3">
+        <div className="col-md-4">
+          <label className="form-label">Фільтр за статусом</label>
+          <select
+            className="form-select"
+            value={filterStatus}
+            onChange={(e) => setFilterStatus(e.target.value)}
+          >
+            <option value="all">Усі</option>
+            <option value="not_started">Очікує</option>
+            <option value="in_progress">У процесі</option>
+            <option value="done">Виконано</option>
+          </select>
+        </div>
+        <div className="col-md-4">
+          <label className="form-label">Фільтр за пріоритетом</label>
+          <select
+            className="form-select"
+            value={filterPriority}
+            onChange={(e) => setFilterPriority(e.target.value)}
+          >
+            <option value="all">Усі</option>
+            <option value="low">Низький</option>
+            <option value="medium">Середній</option>
+            <option value="high">Високий</option>
+          </select>
+        </div>
+        <div className="col-md-4">
+          <label className="form-label">Фільтр за категорією</label>
+          <select
+            className="form-select"
+            value={filterCategory}
+            onChange={(e) => setFilterCategory(e.target.value)}
+          >
+            <option value="all">Усі</option>
+            {categories.map((cat) => (
+              <option key={cat} value={cat}>
+                {cat}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      {reminders.length > 0 && (
+        <div className="alert alert-warning" role="alert">
+          <strong>Нагадування:</strong> У вас {reminders.length} задач
+          {reminders.length === 1 ? "а" : "і"} з дедлайном сьогодні або завтра.
+        </div>
+      )}
+
+      <ul className="list-group">
         {filteredTasks.map((task) =>
           editingTask === task.id ? (
-            <li key={task.id}>
-              <input
-                name="title"
-                value={editForm.title}
-                onChange={handleEditChange}
-              />
-              <input
-                type="date"
-                name="deadline"
-                value={editForm.deadline || ""}
-                onChange={handleEditChange}
-              />
-              <select
-                name="status"
-                value={editForm.status}
-                onChange={handleEditChange}
-              >
-                <option value="not_started">Очікує</option>
-                <option value="in_progress">У процесі</option>
-                <option value="done">Виконано</option>
-              </select>
-              <select
-                name="priority"
-                value={editForm.priority}
-                onChange={handleEditChange}
-              >
-                <option value="low">Низький</option>
-                <option value="medium">Середній</option>
-                <option value="high">Високий</option>
-              </select>
-              <input
-                name="category"
-                placeholder="Категорія"
-                value={editForm.category || ""}
-                onChange={handleEditChange}
-              />
-              <button onClick={saveEdit}>Зберегти</button>
+            <li key={task.id} className="list-group-item">
+              <div className="row g-2 align-items-center">
+                <div className="col-md-3">
+                  <input
+                    name="title"
+                    className="form-control"
+                    value={editForm.title}
+                    onChange={handleEditChange}
+                  />
+                </div>
+                <div className="col-md-2">
+                  <input
+                    name="deadline"
+                    type="date"
+                    className="form-control"
+                    value={editForm.deadline || ""}
+                    onChange={handleEditChange}
+                  />
+                </div>
+                <div className="col-md-2">
+                  <select
+                    name="status"
+                    className="form-select"
+                    value={editForm.status}
+                    onChange={handleEditChange}
+                  >
+                    <option value="not_started">Очікує</option>
+                    <option value="in_progress">У процесі</option>
+                    <option value="done">Виконано</option>
+                  </select>
+                </div>
+                <div className="col-md-2">
+                  <select
+                    name="priority"
+                    className="form-select"
+                    value={editForm.priority}
+                    onChange={handleEditChange}
+                  >
+                    <option value="low">Низький</option>
+                    <option value="medium">Середній</option>
+                    <option value="high">Високий</option>
+                  </select>
+                </div>
+                <div className="col-md-2">
+                  <input
+                    name="category"
+                    className="form-control"
+                    placeholder="Категорія"
+                    value={editForm.category || ""}
+                    onChange={handleEditChange}
+                  />
+                </div>
+                <div className="col-md-1 d-grid gap-2">
+                  <button className="btn btn-success btn-sm" onClick={saveEdit}>
+                    Зберегти
+                  </button>
+                </div>
+              </div>
             </li>
           ) : (
             <li
               key={task.id}
-              style={{
-                color:
-                  task.deadline &&
-                  new Date(task.deadline) < new Date() &&
-                  task.status !== "done"
-                    ? "red"
-                    : "inherit",
-              }}
+              className={`list-group-item ${
+                task.deadline &&
+                new Date(task.deadline) < new Date() &&
+                task.status !== "done"
+                  ? "text-danger"
+                  : ""
+              }`}
             >
-              <strong>{task.title}</strong> — {task.status}
-              <br />
-              <em>Опис:</em> {task.description}
-              <br />
-              <em>Пріоритет:</em> {task.priority}
-              <br />
-              {task.category && (
-                <>
-                  <em>Категорія:</em> {task.category}
-                  <br />
-                </>
-              )}
-              <em>Створено:</em>{" "}
-              {new Date(task.createdAt).toLocaleDateString("uk-UA")}
-              {task.deadline && (
-                <>
-                  <br />
-                  <em>Дедлайн:</em>{" "}
-                  {new Date(task.deadline).toLocaleDateString("uk-UA")}
-                </>
-              )}
-              <br />
-              <button onClick={() => startEdit(task)}>Редагувати</button>
-              <button onClick={() => deleteTask(task.id)}>Видалити</button>
+              <div className="d-flex justify-content-between align-items-center">
+                <div>
+                  <h5 className="mb-1">{task.title}</h5>
+                  <p className="mb-1">
+                    <em>Опис:</em> {task.description} <br />
+                    <em>Статус:</em> {task.status} <br />
+                    <em>Пріоритет:</em> {task.priority} <br />
+                    {task.category && (
+                      <>
+                        <em>Категорія:</em> {task.category} <br />
+                      </>
+                    )}
+                    <em>Створено:</em>{" "}
+                    {new Date(task.createdAt).toLocaleDateString("uk-UA")}{" "}
+                    <br />
+                    {task.deadline && (
+                      <>
+                        <em>Дедлайн:</em>{" "}
+                        {new Date(task.deadline).toLocaleDateString("uk-UA")}
+                      </>
+                    )}
+                  </p>
+                </div>
+                <div className="btn-group btn-group-sm">
+                  <button
+                    className="btn btn-outline-primary"
+                    onClick={() => startEdit(task)}
+                  >
+                    Редагувати
+                  </button>
+                  <button
+                    className="btn btn-outline-danger"
+                    onClick={() => deleteTask(task.id)}
+                  >
+                    Видалити
+                  </button>
+                </div>
+              </div>
             </li>
           )
         )}
       </ul>
-    </>
+    </div>
   );
 };
 

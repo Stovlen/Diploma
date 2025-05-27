@@ -1,4 +1,3 @@
-// src/components/GenerateTaskForm.js
 import React, { useState } from "react";
 import axios from "axios";
 import { getAuthHeaders } from "../utils/authHeaders";
@@ -31,25 +30,31 @@ const GenerateTaskForm = ({ onTaskGenerated }) => {
   };
 
   return (
-    <div
-      style={{
-        marginBottom: "20px",
-        padding: "10px",
-        border: "1px dashed gray",
-      }}
-    >
-      <h3>Генерація задачі за описом</h3>
-      <input
-        type="text"
-        value={prompt}
-        placeholder="Я хочу зробити..."
-        onChange={(e) => setPrompt(e.target.value)}
-        style={{ width: "60%", marginRight: "10px" }}
-      />
-      <button onClick={handleGenerate} disabled={loading}>
-        {loading ? "Генеруємо..." : "Згенерувати"}
-      </button>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+    <div className="mb-4 p-4 border border-dashed bg-white rounded">
+      <h4 className="mb-3">🧠 Генерація задачі за описом</h4>
+
+      <div className="input-group">
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Наприклад: Записатися до стоматолога"
+          value={prompt}
+          onChange={(e) => setPrompt(e.target.value)}
+          disabled={loading}
+        />
+        <button
+          className="btn btn-outline-primary"
+          type="button"
+          onClick={handleGenerate}
+          disabled={loading}
+        >
+          {loading ? "Генеруємо..." : "Згенерувати"}
+        </button>
+      </div>
+
+      {error && (
+        <div className="alert alert-danger mt-3 mb-0 text-center">{error}</div>
+      )}
     </div>
   );
 };

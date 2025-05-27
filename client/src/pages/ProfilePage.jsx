@@ -37,55 +37,81 @@ const ProfilePage = () => {
     }
   };
 
-  if (!user) return <p>Завантаження...</p>;
+  if (!user) return <p className="text-center mt-5">Завантаження...</p>;
 
   return (
-    <div>
-      <h2>Профіль користувача</h2>
+    <div className="container mt-5" style={{ maxWidth: "600px" }}>
+      <div className="card p-4 shadow">
+        <h2 className="text-center mb-4">Профіль користувача</h2>
 
-      {message && <p>{message}</p>}
+        {message && (
+          <div
+            className={`alert ${
+              message.includes("✅") ? "alert-success" : "alert-danger"
+            }`}
+            role="alert"
+          >
+            {message}
+          </div>
+        )}
 
-      <p>
-        <strong>Ім’я:</strong> {user.name}
-      </p>
-      <p>
-        <strong>Стать:</strong> {user.gender}
-      </p>
+        <p>
+          <strong>Ім’я:</strong> {user.name}
+        </p>
+        <p>
+          <strong>Стать:</strong> {user.gender}
+        </p>
 
-      {!editMode ? (
-        <>
-          <p>
-            <strong>Рід діяльності:</strong> {user.occupation}
-          </p>
-          <p>
-            <strong>Email:</strong> {user.email}
-          </p>
-          <p>
-            <strong>Роль:</strong> {user.role}
-          </p>
-          {/*<p>
-            <strong>Дата створення:</strong>{" "}
-            {new Date(user.createdAt).toLocaleDateString("uk-UA")}
-          </p>*/}
-          <button onClick={() => setEditMode(true)}>
-            Редагувати рід діяльності
-          </button>
-        </>
-      ) : (
-        <form onSubmit={handleUpdate}>
-          <input
-            type="text"
-            name="occupation"
-            placeholder="Рід діяльності"
-            value={occupation}
-            onChange={(e) => setOccupation(e.target.value)}
-          />
-          <button type="submit">Зберегти</button>
-          <button type="button" onClick={() => setEditMode(false)}>
-            Скасувати
-          </button>
-        </form>
-      )}
+        {!editMode ? (
+          <>
+            <p>
+              <strong>Рід діяльності:</strong>{" "}
+              {user.occupation || (
+                <span className="text-muted">не вказано</span>
+              )}
+            </p>
+            <p>
+              <strong>Email:</strong> {user.email}
+            </p>
+            <p>
+              <strong>Роль:</strong>{" "}
+              <span className="badge bg-secondary">{user.role}</span>
+            </p>
+            <button
+              onClick={() => setEditMode(true)}
+              className="btn btn-outline-primary mt-3"
+            >
+              Редагувати рід діяльності
+            </button>
+          </>
+        ) : (
+          <form onSubmit={handleUpdate}>
+            <div className="mb-3">
+              <label className="form-label">Рід діяльності</label>
+              <input
+                type="text"
+                className="form-control"
+                name="occupation"
+                placeholder="Введіть рід діяльності"
+                value={occupation}
+                onChange={(e) => setOccupation(e.target.value)}
+              />
+            </div>
+            <div className="d-flex gap-2">
+              <button type="submit" className="btn btn-success">
+                Зберегти
+              </button>
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={() => setEditMode(false)}
+              >
+                Скасувати
+              </button>
+            </div>
+          </form>
+        )}
+      </div>
     </div>
   );
 };

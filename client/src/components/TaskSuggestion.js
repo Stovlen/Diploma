@@ -18,19 +18,22 @@ const TaskSuggestion = () => {
       });
   }, []);
 
-  if (error) return <div style={{ color: "red" }}>{error}</div>;
-  if (!data) return <p>Завантаження рекомендації...</p>;
+  if (error)
+    return (
+      <div className="alert alert-danger text-center" role="alert">
+        {error}
+      </div>
+    );
+
+  if (!data)
+    return (
+      <div className="alert alert-info text-center" role="alert">
+        Завантаження рекомендації...
+      </div>
+    );
 
   return (
-    <div
-      style={{
-        backgroundColor: "#e9f7ef",
-        border: "1px solid #b2dfdb",
-        padding: "10px",
-        borderRadius: "5px",
-        marginBottom: "15px",
-      }}
-    >
+    <div className="alert alert-success" role="alert">
       <strong>Рекомендація ШІ:</strong> {data.suggestion}
     </div>
   );

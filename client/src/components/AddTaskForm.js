@@ -9,7 +9,7 @@ const AddTaskForm = ({ onTaskAdded }) => {
     deadline: "",
     priority: "low",
     status: "not_started",
-    category: "", // 🆕 нове поле
+    category: "",
   });
   const [error, setError] = useState("");
 
@@ -41,9 +41,7 @@ const AddTaskForm = ({ onTaskAdded }) => {
       const response = await axios.post(
         "http://localhost:5000/api/tasks",
         preparedForm,
-        {
-          headers: getAuthHeaders(),
-        }
+        { headers: getAuthHeaders() }
       );
       onTaskAdded(response.data);
       setForm({
@@ -52,7 +50,7 @@ const AddTaskForm = ({ onTaskAdded }) => {
         deadline: "",
         priority: "low",
         status: "not_started",
-        category: "", // 🧹 очищаємо після сабміту
+        category: "",
       });
     } catch (err) {
       console.error("Помилка при створенні задачі:", err);
@@ -61,51 +59,94 @@ const AddTaskForm = ({ onTaskAdded }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Додати нову задачу</h2>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+    <form onSubmit={handleSubmit} className="mb-4 p-4 bg-light border rounded">
+      <h4 className="mb-3">Додати нову задачу</h4>
 
-      <input
-        type="text"
-        name="title"
-        placeholder="Назва"
-        value={form.title}
-        onChange={handleChange}
-        required
-      />
-      <input
-        type="text"
-        name="description"
-        placeholder="Опис"
-        value={form.description}
-        onChange={handleChange}
-      />
-      <input
-        type="date"
-        name="deadline"
-        value={form.deadline}
-        onChange={handleChange}
-      />
-      <select name="priority" value={form.priority} onChange={handleChange}>
-        <option value="low">Низький</option>
-        <option value="medium">Середній</option>
-        <option value="high">Високий</option>
-      </select>
-      <select name="status" value={form.status} onChange={handleChange}>
-        <option value="not_started">Очікує</option>
-        <option value="in_progress">У процесі</option>
-        <option value="done">Виконано</option>
-      </select>
+      {error && (
+        <div className="alert alert-danger text-center" role="alert">
+          {error}
+        </div>
+      )}
 
-      <input
-        type="text"
-        name="category"
-        placeholder="Категорія (опціонально)"
-        value={form.category}
-        onChange={handleChange}
-      />
+      <div className="mb-3">
+        <label className="form-label">Назва</label>
+        <input
+          type="text"
+          name="title"
+          className="form-control"
+          placeholder="Напр. Купити молоко"
+          value={form.title}
+          onChange={handleChange}
+          required
+        />
+      </div>
 
-      <button type="submit">Створити</button>
+      <div className="mb-3">
+        <label className="form-label">Опис</label>
+        <input
+          type="text"
+          name="description"
+          className="form-control"
+          placeholder="Короткий опис"
+          value={form.description}
+          onChange={handleChange}
+        />
+      </div>
+
+      <div className="mb-3">
+        <label className="form-label">Дедлайн</label>
+        <input
+          type="date"
+          name="deadline"
+          className="form-control"
+          value={form.deadline}
+          onChange={handleChange}
+        />
+      </div>
+
+      <div className="mb-3">
+        <label className="form-label">Пріоритет</label>
+        <select
+          name="priority"
+          className="form-select"
+          value={form.priority}
+          onChange={handleChange}
+        >
+          <option value="low">Низький</option>
+          <option value="medium">Середній</option>
+          <option value="high">Високий</option>
+        </select>
+      </div>
+
+      <div className="mb-3">
+        <label className="form-label">Статус</label>
+        <select
+          name="status"
+          className="form-select"
+          value={form.status}
+          onChange={handleChange}
+        >
+          <option value="not_started">Очікує</option>
+          <option value="in_progress">У процесі</option>
+          <option value="done">Виконано</option>
+        </select>
+      </div>
+
+      <div className="mb-4">
+        <label className="form-label">Категорія (опціонально)</label>
+        <input
+          type="text"
+          name="category"
+          className="form-control"
+          placeholder="Напр. Робота, Навчання"
+          value={form.category}
+          onChange={handleChange}
+        />
+      </div>
+
+      <button type="submit" className="btn btn-success w-100">
+        Створити задачу
+      </button>
     </form>
   );
 };

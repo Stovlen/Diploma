@@ -4,8 +4,8 @@ import TaskSuggestion from "../components/TaskSuggestion";
 
 const TipsPage = () => {
   return (
-    <div>
-      <h1>ШІ поради</h1>
+    <div className="container py-4">
+      <h2 className="text-center mb-4">🧠 ШІ поради</h2>
       <DailyTip />
       <TaskSuggestion />
     </div>

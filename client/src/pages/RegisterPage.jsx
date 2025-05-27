@@ -47,55 +47,111 @@ const RegisterPage = () => {
   };
 
   return (
-    <div>
-      <h2>Реєстрація</h2>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      <form onSubmit={handleRegister}>
-        <input
-          type="text"
-          name="name"
-          placeholder="Ім'я"
-          value={form.name}
-          onChange={handleChange}
-        />
-        <input
-          type="text"
-          name="occupation"
-          placeholder="Рід діяльності"
-          value={form.occupation}
-          onChange={handleChange}
-        />
-        <select name="gender" value={form.gender} onChange={handleChange}>
-          <option value="">Оберіть стать</option>
-          <option value="Чоловік">Чоловік</option>
-          <option value="Жінка">Жінка</option>
-        </select>
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={form.email}
-          onChange={handleChange}
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Пароль"
-          value={form.password}
-          onChange={handleChange}
-        />
-        <input
-          type="password"
-          name="confirmPassword"
-          placeholder="Підтвердити пароль"
-          value={form.confirmPassword}
-          onChange={handleChange}
-        />
-        <button type="submit">Зареєструватися</button>
-      </form>
-      <p>
-        Уже є акаунт? <Link to="/login">Увійти</Link>
-      </p>
+    <div className="container d-flex align-items-center justify-content-center min-vh-100">
+      <div className="card shadow p-4 w-100" style={{ maxWidth: "500px" }}>
+        <h2 className="text-center mb-4">Реєстрація</h2>
+
+        {error && (
+          <div className="alert alert-danger text-center" role="alert">
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleRegister}>
+          <div className="mb-3">
+            <label className="form-label">Ім'я</label>
+            <input
+              type="text"
+              name="name"
+              className="form-control"
+              placeholder="Введіть ім'я"
+              value={form.name}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label">Рід діяльності</label>
+            <input
+              type="text"
+              name="occupation"
+              className="form-control"
+              placeholder="Введіть рід діяльності"
+              value={form.occupation}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label">Стать</label>
+            <select
+              name="gender"
+              className="form-select"
+              value={form.gender}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Оберіть стать</option>
+              <option value="Чоловік">Чоловік</option>
+              <option value="Жінка">Жінка</option>
+            </select>
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label">Email</label>
+            <input
+              type="email"
+              name="email"
+              className="form-control"
+              placeholder="Введіть email"
+              value={form.email}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label">Пароль</label>
+            <input
+              type="password"
+              name="password"
+              className="form-control"
+              placeholder="Введіть пароль"
+              value={form.password}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label">Підтвердити пароль</label>
+            <input
+              type="password"
+              name="confirmPassword"
+              className="form-control"
+              placeholder="Повторіть пароль"
+              value={form.confirmPassword}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <button type="submit" className="btn btn-success w-100">
+            Зареєструватися
+          </button>
+        </form>
+
+        <div className="text-center mt-3">
+          <small>
+            Уже є акаунт?{" "}
+            <Link to="/login" className="text-decoration-none">
+              Увійти
+            </Link>
+          </small>
+        </div>
+      </div>
     </div>
   );
 };

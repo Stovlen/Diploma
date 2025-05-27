@@ -1,10 +1,7 @@
 import React, { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
 
-const ResetPasswordPage = () => {
-  const { token } = useParams();
-  const navigate = useNavigate();
-  const [newPassword, setNewPassword] = useState("");
+const ForgotPasswordPage = () => {
+  const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
@@ -15,20 +12,19 @@ const ResetPasswordPage = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/reset-password/${token}`,
+        "http://localhost:5000/api/forgot-password",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ newPassword }),
+          body: JSON.stringify({ email }),
         }
       );
 
       const data = await response.json();
       if (response.ok) {
-        setMessage("Пароль успішно змінено. Перенаправлення...");
-        setTimeout(() => navigate("/login"), 2000);
+        setMessage("Інструкції надіслано на email");
       } else {
-        setError(data.error || "Помилка скидання");
+        setError(data.error || "Помилка надсилання листа");
       }
     } catch (err) {
       setError("Серверна помилка");
@@ -54,22 +50,22 @@ const ResetPasswordPage = () => {
 
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
-            <label htmlFor="newPassword" className="form-label">
-              Новий пароль
+            <label htmlFor="email" className="form-label">
+              Email
             </label>
             <input
-              type="password"
-              id="newPassword"
+              type="email"
+              id="email"
               className="form-control"
-              placeholder="Введіть новий пароль"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
+              placeholder="Введіть email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>
 
-          <button type="submit" className="btn btn-success w-100">
-            Оновити пароль
+          <button type="submit" className="btn btn-primary w-100">
+            Надіслати інструкції
           </button>
         </form>
       </div>
@@ -77,4 +73,4 @@ const ResetPasswordPage = () => {
   );
 };
 
-export default ResetPasswordPage;
+export default ForgotPasswordPage;

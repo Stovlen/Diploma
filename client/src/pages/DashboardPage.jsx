@@ -5,8 +5,9 @@ import TaskPerformanceChart from "../components/TaskPerformanceChart";
 
 const DashboardPage = () => {
   return (
-    <div>
-      <h1>Статистика задач</h1>
+    <div className="container py-4">
+      <h2 className="text-center mb-5">📊 Статистика задач</h2>
+
       <TaskAnalytics />
       <TaskPriorityChart />
       <TaskPerformanceChart />
