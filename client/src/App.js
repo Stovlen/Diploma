@@ -8,6 +8,8 @@ import {
 
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage"; // ⬅️ ДОДАНО
+import ResetPasswordPage from "./pages/ResetPasswordPage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import TasksPage from "./pages/TasksPage";
 import AdminPage from "./pages/AdminPage";
 import NotFound from "./pages/NotFound";
@@ -45,6 +47,8 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
         <Route path="/register" element={<RegisterPage />} /> {/* ⬅️ ДОДАНО */}
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
         <Route
           path="/tasks"
           element={

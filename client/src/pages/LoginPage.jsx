@@ -60,6 +60,9 @@ const LoginPage = ({ onLogin }) => {
       <p>
         Ще не маєте акаунта? <Link to="/register">Зареєструватися</Link>
       </p>
+      <p>
+        Забули пароль? <Link to="/forgot-password">Скинути</Link>
+      </p>
     </div>
   );
 };
