@@ -129,3 +129,94 @@ exports.generateTaskFromPrompt = async (req, res) => {
     res.status(500).json({ error: "AI не зміг згенерувати задачу" });
   }
 };
+
+exports.analyzeHabits = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const user = await User.findByPk(userId, {
+      attributes: ["name", "gender", "occupation"],
+    });
+
+    const allTasks = await Task.findAll({ where: { userId } });
+
+    const now = new Date();
+    const weekAgo = new Date();
+    weekAgo.setDate(now.getDate() - 7);
+
+    const completedTasks = allTasks.filter((t) => t.status === "done");
+    const overdueTasks = allTasks.filter(
+      (t) => t.deadline && new Date(t.deadline) < now && t.status !== "done"
+    );
+
+    const recentCompleted = completedTasks.filter(
+      (t) => new Date(t.updatedAt) >= weekAgo
+    );
+
+    const priorityCount = {
+      low: completedTasks.filter((t) => t.priority === "low").length,
+      medium: completedTasks.filter((t) => t.priority === "medium").length,
+      high: completedTasks.filter((t) => t.priority === "high").length,
+    };
+
+    const categories = {};
+    completedTasks.forEach((task) => {
+      if (task.category) {
+        categories[task.category] = (categories[task.category] || 0) + 1;
+      }
+    });
+
+    const systemPrompt = `
+Ти — аналітик продуктивності користувача. Оціни звички користувача за такими параметрами:
+
+1. Кількість виконаних задач: ${completedTasks.length}
+2. Прострочені задачі: ${overdueTasks.length}
+3. Завдань виконано за останній тиждень: ${recentCompleted.length}
+4. Розподіл по пріоритетах:
+   - Low: ${priorityCount.low}
+   - Medium: ${priorityCount.medium}
+   - High: ${priorityCount.high}
+5. Найпопулярніші категорії: ${
+      Object.entries(categories)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 3)
+        .map(([cat, count]) => `${cat} (${count})`)
+        .join(", ") || "немає"
+    }
+
+🧠 Задача:
+Зроби аналіз у вигляді 2-3 абзаців українською мовою. Дай поради, як покращити продуктивність. Уникай повторів.
+
+Користувач:
+- Ім’я: ${user.name || "не вказано"}
+- Стать: ${user.gender || "не вказано"}
+- Діяльність: ${user.occupation || "не вказано"}
+
+📦 Формат:
+{ "insight": "..." }
+`.trim();
+
+    const response = await axios.post(
+      "https://api.openai.com/v1/chat/completions",
+      {
+        model: "gpt-3.5-turbo",
+        messages: [{ role: "system", content: systemPrompt }],
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.AI_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const parsed = JSON.parse(response.data.choices[0].message.content);
+    res.json(parsed);
+  } catch (err) {
+    console.error(
+      "❌ Habit Analysis Error:",
+      err?.response?.data || err.message
+    );
+    res.status(500).json({ error: "Не вдалося провести аналіз звичок" });
+  }
+};
