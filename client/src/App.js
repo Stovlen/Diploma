@@ -7,6 +7,9 @@ import {
   useLocation,
 } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -67,6 +70,7 @@ function App() {
 
   return (
     <Router>
+      <ToastContainer position="top-right" autoClose={3000} />
       <LayoutWrapper>
         <Routes>
           <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />

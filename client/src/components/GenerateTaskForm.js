@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 import { getAuthHeaders } from "../utils/authHeaders";
 
 const GenerateTaskForm = ({ onTaskGenerated }) => {
@@ -20,6 +21,7 @@ const GenerateTaskForm = ({ onTaskGenerated }) => {
         { headers: getAuthHeaders() }
       );
       onTaskGenerated(res.data);
+      toast.success("🧠 Задачу згенеровано успішно!");
       setPrompt("");
     } catch (err) {
       console.error("❌ Помилка генерації задачі:", err);

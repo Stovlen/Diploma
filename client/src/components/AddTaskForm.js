@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 import { getAuthHeaders } from "../utils/authHeaders";
 
 const AddTaskForm = ({ onTaskAdded }) => {
@@ -43,7 +44,10 @@ const AddTaskForm = ({ onTaskAdded }) => {
         preparedForm,
         { headers: getAuthHeaders() }
       );
+
       onTaskAdded(response.data);
+      toast.success("✅ Задачу додано успішно!"); // 🟢 Ось тут
+
       setForm({
         title: "",
         description: "",
@@ -56,6 +60,7 @@ const AddTaskForm = ({ onTaskAdded }) => {
       console.error("Помилка при створенні задачі:", err);
       setError("Не вдалося створити задачу");
     }
+    
   };
 
   return (
