@@ -73,10 +73,10 @@ const ProfilePage = () => {
             <p>
               <strong>Email:</strong> {user.email}
             </p>
-            <p>
+            {/*<p>
               <strong>Роль:</strong>{" "}
               <span className="badge bg-secondary">{user.role}</span>
-            </p>
+            </p>*/}
             <button
               onClick={() => setEditMode(true)}
               className="btn btn-outline-primary mt-3"

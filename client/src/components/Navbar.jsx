@@ -1,38 +1,36 @@
-// src/components/Navbar.jsx
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("userRole");
+    navigate("/login");
+  };
+
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
-      <div className="container">
-        <Link className="navbar-brand" to="/">
-          TaskMaster
+    <nav className="navbar navbar-light bg-light px-4 d-flex justify-content-between">
+      <Link to="/" className="navbar-brand fw-bold">
+        TaskMaster
+      </Link>
+      <div>
+        <Link to="/tasks" className="me-3 text-decoration-none text-dark">
+          Мої задачі
         </Link>
-        <div className="collapse navbar-collapse">
-          <ul className="navbar-nav ms-auto">
-            <li className="nav-item">
-              <Link className="nav-link" to="/tasks">
-                Мої задачі
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/dashboard">
-                Аналітика
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/tips">
-                ШІ поради
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link text-danger" to="/logout">
-                Вийти
-              </Link>
-            </li>
-          </ul>
-        </div>
+        <Link to="/dashboard" className="me-3 text-decoration-none text-dark">
+          Аналітика
+        </Link>
+        <Link to="/tips" className="me-3 text-decoration-none text-dark">
+          ШІ поради
+        </Link>
+        <Link to="/profile" className="me-3 text-decoration-none text-dark">
+          Мій профіль
+        </Link>
+        <button onClick={handleLogout} className="btn btn-link text-danger p-0">
+          Вийти
+        </button>
       </div>
     </nav>
   );

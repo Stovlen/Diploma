@@ -25,7 +25,13 @@ const LoginPage = ({ onLogin }) => {
         localStorage.setItem("token", data.token);
         localStorage.setItem("userRole", data.user.role);
         onLogin();
-        navigate("/tasks");
+
+        // 🔁 Перенаправлення за роллю
+        if (data.user.role === "admin") {
+          navigate("/admin");
+        } else {
+          navigate("/tasks");
+        }
       } else {
         setError(data.error || "Помилка авторизації");
       }
@@ -34,6 +40,7 @@ const LoginPage = ({ onLogin }) => {
       setError("Серверна помилка");
     }
   };
+  
 
   return (
     <div className="container d-flex align-items-center justify-content-center min-vh-100">

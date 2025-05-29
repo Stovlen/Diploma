@@ -160,49 +160,60 @@ const TaskList = () => {
         <GenerateTaskForm onTaskGenerated={handleTaskAdded} />
       </div>
 
-      <div className="row g-2 my-3">
-        <div className="col-md-4">
-          <label className="form-label">Фільтр за статусом</label>
-          <select
-            className="form-select"
-            value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
-          >
-            <option value="all">Усі</option>
-            <option value="not_started">Очікує</option>
-            <option value="in_progress">У процесі</option>
-            <option value="done">Виконано</option>
-          </select>
-        </div>
-        <div className="col-md-4">
-          <label className="form-label">Фільтр за пріоритетом</label>
-          <select
-            className="form-select"
-            value={filterPriority}
-            onChange={(e) => setFilterPriority(e.target.value)}
-          >
-            <option value="all">Усі</option>
-            <option value="low">Низький</option>
-            <option value="medium">Середній</option>
-            <option value="high">Високий</option>
-          </select>
-        </div>
-        <div className="col-md-4">
-          <label className="form-label">Фільтр за категорією</label>
-          <select
-            className="form-select"
-            value={filterCategory}
-            onChange={(e) => setFilterCategory(e.target.value)}
-          >
-            <option value="all">Усі</option>
-            {categories.map((cat) => (
-              <option key={cat} value={cat}>
-                {cat}
-              </option>
-            ))}
-          </select>
+      <div className="p-3 rounded bg-white shadow-sm mb-4">
+        <div className="row g-2">
+          <div className="col-md-4">
+            <label className="form-label fw-bold text-dark">
+              Фільтр за статусом
+            </label>
+            <select
+              className="form-select"
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value)}
+            >
+              <option value="all">Усі</option>
+              <option value="not_started">Очікує</option>
+              <option value="in_progress">У процесі</option>
+              <option value="done">Виконано</option>
+            </select>
+          </div>
+
+          <div className="col-md-4">
+            <label className="form-label fw-bold text-dark">
+              Фільтр за пріоритетом
+            </label>
+            <select
+              className="form-select"
+              value={filterPriority}
+              onChange={(e) => setFilterPriority(e.target.value)}
+            >
+              <option value="all">Усі</option>
+              <option value="low">Низький</option>
+              <option value="medium">Середній</option>
+              <option value="high">Високий</option>
+            </select>
+          </div>
+
+          <div className="col-md-4">
+            <label className="form-label fw-bold text-dark">
+              Фільтр за категорією
+            </label>
+            <select
+              className="form-select"
+              value={filterCategory}
+              onChange={(e) => setFilterCategory(e.target.value)}
+            >
+              <option value="all">Усі</option>
+              {categories.map((cat) => (
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
+
       {reminders.length > 0 && (
         <div className="alert alert-warning" role="alert">
           <strong>Нагадування:</strong> У вас {reminders.length} задач

@@ -44,21 +44,34 @@ exports.getAllTasks = async (req, res) => {
 };
 
 // PUT /api/admin/tasks/:id — редагування задачі
+// PUT /api/admin/tasks/:id — редагування задачі
 exports.updateTaskByAdmin = async (req, res) => {
   try {
     const { id } = req.params;
-    const [updated] = await Task.update(req.body, { where: { id } });
 
-    if (updated === 0) {
+    // Оновлюємо лише дозволені поля
+    const { title, deadline, status, priority, category } = req.body;
+
+    const task = await Task.findByPk(id);
+    if (!task) {
       return res.status(404).json({ error: "Задачу не знайдено" });
     }
 
-    const updatedTask = await Task.findByPk(id);
+    // ❗ Не змінюємо userId, щоб автор залишився тим самим
+    await task.update({ title, deadline, status, priority, category });
+
+    // Повторно знаходимо з приєднаним користувачем
+    const updatedTask = await Task.findByPk(id, {
+      include: [{ model: User, attributes: ["email"] }],
+    });
+
     res.json(updatedTask);
   } catch (err) {
+    console.error("Помилка при оновленні задачі:", err);
     res.status(500).json({ error: "Не вдалося оновити задачу" });
   }
 };
+
 
 // DELETE /api/admin/tasks/:id — видалення задачі
 exports.deleteTaskByAdmin = async (req, res) => {
