@@ -1,8 +1,36 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 import AddTaskForm from "./AddTaskForm";
 import { getAuthHeaders } from "../utils/authHeaders";
 import GenerateTaskForm from "./GenerateTaskForm"; // 🟢 Додано імпорт
+
+const translateStatus = (status) => {
+  switch (status) {
+    case "not_started":
+      return "Очікує";
+    case "in_progress":
+      return "У процесі";
+    case "done":
+      return "Виконано";
+    default:
+      return status;
+  }
+};
+
+const translatePriority = (priority) => {
+  switch (priority) {
+    case "low":
+      return "Низький";
+    case "medium":
+      return "Середній";
+    case "high":
+      return "Високий";
+    default:
+      return priority;
+  }
+};
+
 
 const TaskList = () => {
   const [tasks, setTasks] = useState([]);
@@ -63,7 +91,10 @@ const TaskList = () => {
       .delete(`http://localhost:5000/api/tasks/${id}`, {
         headers: getAuthHeaders(),
       })
-      .then(() => setTasks(tasks.filter((task) => task.id !== id)))
+      .then(() => {
+        setTasks(tasks.filter((task) => task.id !== id));
+        toast.success("Задачу успішно видалено");
+      })
       .catch((err) => console.error("Помилка при видаленні задачі:", err));
   };
 
@@ -82,9 +113,11 @@ const TaskList = () => {
         headers: getAuthHeaders(),
       })
       .then((res) => {
-        setTasks(tasks.map((t) => (t.id === editingTask ? res.data : t)));
-        setEditingTask(null);
-      })
+  setTasks(tasks.map((t) => (t.id === editingTask ? res.data : t)));
+  setEditingTask(null);
+  toast.success("Задачу оновлено");
+})
+
       .catch((err) => console.error("Помилка при оновленні задачі:", err));
   };
 
@@ -254,8 +287,9 @@ const TaskList = () => {
                   <h5 className="mb-1">{task.title}</h5>
                   <p className="mb-1">
                     <em>Опис:</em> {task.description} <br />
-                    <em>Статус:</em> {task.status} <br />
-                    <em>Пріоритет:</em> {task.priority} <br />
+                    <em>Статус:</em> {translateStatus(task.status)} <br />
+                    <em>Пріоритет:</em> {translatePriority(task.priority)}{" "}
+                    <br />
                     {task.category && (
                       <>
                         <em>Категорія:</em> {task.category} <br />
