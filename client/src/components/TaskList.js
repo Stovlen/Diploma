@@ -13,6 +13,12 @@ const TaskList = () => {
   const [filterCategory, setFilterCategory] = useState("all");
   const [reminders, setReminders] = useState([]);
 
+  // ✅ додай сюди:
+  const [showForm, setShowForm] = useState(false);
+
+  const [showGenerator, setShowGenerator] = useState(false);
+
+
   useEffect(() => {
     const fetchTasks = () => {
       axios
@@ -97,8 +103,29 @@ const TaskList = () => {
 
   return (
     <div className="mt-4">
-      <GenerateTaskForm onTaskGenerated={handleTaskAdded} />
-      <AddTaskForm onTaskAdded={handleTaskAdded} />
+      {/* Кнопка для показу/приховування */}
+      <button
+        className="btn btn-success mb-3"
+        onClick={() => setShowForm(!showForm)}
+      >
+        {showForm ? "Сховати форму" : "➕ Додати задачу"}
+      </button>
+
+      {/* Форма додавання задачі */}
+      <div className={`slide-down ${showForm ? "show" : ""}`}>
+        <AddTaskForm onTaskAdded={handleTaskAdded} />
+      </div>
+
+      <button
+        className="btn btn-info mb-3"
+        onClick={() => setShowGenerator(!showGenerator)}
+      >
+        {showGenerator ? "Сховати генератор" : "🧠 Згенерувати задачу"}
+      </button>
+
+      <div className={`slide-down ${showGenerator ? "show" : ""}`}>
+        <GenerateTaskForm onTaskGenerated={handleTaskAdded} />
+      </div>
 
       <div className="row g-2 my-3">
         <div className="col-md-4">
@@ -143,14 +170,12 @@ const TaskList = () => {
           </select>
         </div>
       </div>
-
       {reminders.length > 0 && (
         <div className="alert alert-warning" role="alert">
           <strong>Нагадування:</strong> У вас {reminders.length} задач
           {reminders.length === 1 ? "а" : "і"} з дедлайном сьогодні або завтра.
         </div>
       )}
-
       <ul className="list-group">
         {filteredTasks.map((task) =>
           editingTask === task.id ? (

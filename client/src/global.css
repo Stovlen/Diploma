@@ -20,3 +20,17 @@ footer {
   font-size: 0.9rem;
   color: #555;
 }
+
+.slide-down {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: all 0.4s ease;
+}
+
+.slide-down.show {
+  max-height: 1000px; /* великий запас */
+  opacity: 1;
+  transform: translateY(0);
+}
