@@ -8,7 +8,9 @@ const TasksPage = ({ onLogout }) => {
   return (
     <div className="container py-4">
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <h1 className="mb-0">📋 Задачі</h1>
+        <div className="p-3 bg-light border rounded shadow-sm mb-4">
+          <h1 className="mb-0">📋 Задачі</h1>
+        </div>
       </div>
 
       {/* 🔵 Лише одна кнопка */}
