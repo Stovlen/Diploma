@@ -42,25 +42,30 @@ const TaskPerformanceChart = () => {
   }, []);
 
   return (
-    <div className="mt-5">
-      <h4 className="text-center mb-4">📈 Динаміка продуктивності</h4>
-
-      <div className="card shadow p-3">
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={data}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="date" />
-            <YAxis allowDecimals={false} />
-            <Tooltip />
-            <Legend />
-            <Line
-              type="monotone"
-              dataKey="completed"
-              stroke="#198754"
-              name="Виконано задач"
-            />
-          </LineChart>
-        </ResponsiveContainer>
+    <div className="container my-5">
+      <div className="card shadow-sm p-4">
+        <h3 className="text-center mb-4">📈 Динаміка продуктивності</h3>
+        {data.length === 0 ? (
+          <div className="text-center text-muted fs-5">
+            Жодного завдання не виконано
+          </div>
+        ) : (
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={data}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="date" />
+              <YAxis allowDecimals={false} />
+              <Tooltip />
+              <Legend />
+              <Line
+                type="monotone"
+                dataKey="completed"
+                stroke="#198754"
+                name="Виконано задач"
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        )}
       </div>
     </div>
   );

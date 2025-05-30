@@ -49,31 +49,40 @@ const TaskPriorityChart = () => {
       .catch((err) => console.error("Помилка при завантаженні задач:", err));
   }, []);
 
+  const hasNoData = data.every((item) => item.value === 0);
+
   return (
     <div className="container my-5">
       <div className="card shadow-sm p-4">
         <h3 className="text-center mb-4">Розподіл задач за пріоритетом</h3>
-        <div style={{ width: "100%", height: 300 }}>
-          <ResponsiveContainer>
-            <PieChart>
-              <Pie
-                data={data}
-                dataKey="value"
-                nameKey="name"
-                cx="50%"
-                cy="50%"
-                outerRadius={100}
-                label
-              >
-                {data.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[entry.raw]} />
-                ))}
-              </Pie>
-              <Tooltip />
-              <Legend />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
+
+        {hasNoData ? (
+          <div className="text-center text-muted fs-5">
+            Жодного завдання немає
+          </div>
+        ) : (
+          <div style={{ width: "100%", height: 300 }}>
+            <ResponsiveContainer>
+              <PieChart>
+                <Pie
+                  data={data}
+                  dataKey="value"
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={100}
+                  label
+                >
+                  {data.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[entry.raw]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        )}
       </div>
     </div>
   );

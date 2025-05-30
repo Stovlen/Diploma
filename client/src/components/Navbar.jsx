@@ -12,7 +12,7 @@ const Navbar = () => {
 
   return (
     <nav className="navbar navbar-light bg-light px-4 d-flex justify-content-between">
-      <Link to="/" className="navbar-brand fw-bold">
+      <Link to="/tasks" className="navbar-brand fw-bold">
         TaskMaster
       </Link>
       <div>
