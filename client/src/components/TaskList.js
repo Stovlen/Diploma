@@ -41,7 +41,6 @@ const TaskList = () => {
   const [filterCategory, setFilterCategory] = useState("all");
   const [reminders, setReminders] = useState([]);
 
-  // ✅ додай сюди:
   const [showForm, setShowForm] = useState(false);
 
   const [showGenerator, setShowGenerator] = useState(false);
@@ -54,9 +53,29 @@ const TaskList = () => {
           headers: getAuthHeaders(),
         })
         .then((res) => {
-          setTasks(res.data);
-          checkReminders(res.data);
+          const sortedTasks = res.data.sort((a, b) => {
+            const isDoneA = a.status === "done";
+            const isDoneB = b.status === "done";
+
+            // 1. Виконані завжди внизу
+            if (isDoneA && !isDoneB) return 1;
+            if (!isDoneA && isDoneB) return -1;
+
+            // 2. Серед невиконаних — ближчий дедлайн вище
+            const deadlineA = a.deadline ? new Date(a.deadline) : null;
+            const deadlineB = b.deadline ? new Date(b.deadline) : null;
+
+            if (deadlineA && deadlineB) return deadlineA - deadlineB;
+            if (deadlineA) return -1; // A має дедлайн, B — ні
+            if (deadlineB) return 1; // B має дедлайн, A — ні
+
+            return 0;
+          });
+
+          setTasks(sortedTasks);
+          checkReminders(sortedTasks);
         })
+
         .catch((err) => console.error("Помилка при завантаженні задач:", err));
     };
 
@@ -83,8 +102,9 @@ const TaskList = () => {
   };
 
   const handleTaskAdded = (newTask) => {
-    setTasks([...tasks, newTask]);
+    setTasks((prev) => [newTask, ...prev]);
   };
+  
 
   const deleteTask = (id) => {
     axios
@@ -121,7 +141,6 @@ const TaskList = () => {
       .catch((err) => console.error("Помилка при оновленні задачі:", err));
   };
 
-  const categories = [...new Set(tasks.map((t) => t.category).filter(Boolean))];
 
   const filteredTasks = tasks
     .filter((task) =>
@@ -172,9 +191,26 @@ const TaskList = () => {
               onChange={(e) => setFilterStatus(e.target.value)}
             >
               <option value="all">Усі</option>
-              <option value="not_started">Очікує</option>
-              <option value="in_progress">У процесі</option>
-              <option value="done">Виконано</option>
+              {[
+                ...new Set(
+                  tasks
+                    .filter(
+                      (t) =>
+                        filterPriority === "all" ||
+                        t.priority === filterPriority
+                    )
+                    .filter(
+                      (t) =>
+                        filterCategory === "all" ||
+                        t.category === filterCategory
+                    )
+                    .map((t) => t.status)
+                ),
+              ].map((status) => (
+                <option key={status} value={status}>
+                  {translateStatus(status)}
+                </option>
+              ))}
             </select>
           </div>
 
@@ -188,9 +224,24 @@ const TaskList = () => {
               onChange={(e) => setFilterPriority(e.target.value)}
             >
               <option value="all">Усі</option>
-              <option value="low">Низький</option>
-              <option value="medium">Середній</option>
-              <option value="high">Високий</option>
+              {[
+                ...new Set(
+                  tasks
+                    .filter(
+                      (t) => filterStatus === "all" || t.status === filterStatus
+                    )
+                    .filter(
+                      (t) =>
+                        filterCategory === "all" ||
+                        t.category === filterCategory
+                    )
+                    .map((t) => t.priority)
+                ),
+              ].map((priority) => (
+                <option key={priority} value={priority}>
+                  {translatePriority(priority)}
+                </option>
+              ))}
             </select>
           </div>
 
@@ -204,7 +255,21 @@ const TaskList = () => {
               onChange={(e) => setFilterCategory(e.target.value)}
             >
               <option value="all">Усі</option>
-              {categories.map((cat) => (
+              {[
+                ...new Set(
+                  tasks
+                    .filter(
+                      (t) => filterStatus === "all" || t.status === filterStatus
+                    )
+                    .filter(
+                      (t) =>
+                        filterPriority === "all" ||
+                        t.priority === filterPriority
+                    )
+                    .map((t) => t.category)
+                    .filter(Boolean)
+                ),
+              ].map((cat) => (
                 <option key={cat} value={cat}>
                   {cat}
                 </option>
@@ -240,6 +305,15 @@ const TaskList = () => {
                     className="form-control"
                     value={editForm.deadline || ""}
                     onChange={handleEditChange}
+                    min={
+                      editingTask
+                        ? new Date(
+                            tasks.find((t) => t.id === editingTask)?.createdAt
+                          )
+                            .toISOString()
+                            .split("T")[0]
+                        : undefined
+                    }
                   />
                 </div>
                 <div className="col-md-2">

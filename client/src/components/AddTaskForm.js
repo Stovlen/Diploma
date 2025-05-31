@@ -104,6 +104,7 @@ const AddTaskForm = ({ onTaskAdded }) => {
           type="date"
           name="deadline"
           className="form-control"
+          min={new Date().toISOString().split("T")[0]} // мінімальна дата — сьогодні
           value={form.deadline}
           onChange={handleChange}
         />

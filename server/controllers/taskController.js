@@ -33,6 +33,13 @@ exports.getTaskById = async (req, res) => {
 // POST /api/tasks — створення задачі з userId
 exports.createTask = async (req, res) => {
   try {
+    const { deadline } = req.body;
+
+    // Перевірка дедлайну
+    if (deadline && new Date(deadline) < new Date().setHours(0, 0, 0, 0)) {
+      return res.status(400).json({ error: "Дедлайн не може бути в минулому" });
+    }
+
     const task = await Task.create({ ...req.body, userId: req.user.id });
     res.status(201).json(task);
   } catch (error) {
@@ -42,20 +49,37 @@ exports.createTask = async (req, res) => {
   }
 };
 
-// PUT /api/tasks/:id — оновлення лише своїх задач
+
+// PUT /api/tasks/:id — оновлення задачі
 exports.updateTask = async (req, res) => {
   try {
-    const task = await Task.findOne({
-      where: { id: req.params.id, userId: req.user.id },
-    });
-    if (!task) return res.status(404).json({ error: "Задачу не знайдено" });
+    const { id } = req.params;
+    const task = await Task.findByPk(id);
+
+    if (!task) {
+      return res.status(404).json({ error: "Задачу не знайдено" });
+    }
+
+    // Якщо є deadline — перевіряємо
+    if (req.body.deadline) {
+      const newDeadline = new Date(req.body.deadline);
+      const createdAt = new Date(task.createdAt);
+
+      if (newDeadline < createdAt.setHours(0, 0, 0, 0)) {
+        return res
+          .status(400)
+          .json({ error: "Дедлайн не може бути раніше дати створення задачі" });
+      }
+    }
 
     await task.update(req.body);
     res.json(task);
-  } catch (error) {
-    res.status(400).json({ error: "Не вдалося оновити задачу" });
+  } catch (err) {
+    console.error("❌ Помилка при оновленні задачі:", err.message);
+    res.status(500).json({ error: "Не вдалося оновити задачу" });
   }
 };
+
 
 // DELETE /api/tasks/:id — видалення лише своїх задач
 exports.deleteTask = async (req, res) => {
