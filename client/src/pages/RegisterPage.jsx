@@ -10,6 +10,9 @@ const RegisterPage = () => {
     password: "",
     confirmPassword: "",
   });
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
@@ -114,28 +117,46 @@ const RegisterPage = () => {
 
           <div className="mb-3">
             <label className="form-label">Пароль</label>
-            <input
-              type="password"
-              name="password"
-              className="form-control"
-              placeholder="Введіть пароль"
-              value={form.password}
-              onChange={handleChange}
-              required
-            />
+            <div className="input-group">
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                className="form-control"
+                placeholder="Введіть пароль"
+                value={form.password}
+                onChange={handleChange}
+                required
+              />
+              <button
+                type="button"
+                className="btn btn-outline-secondary"
+                onClick={() => setShowPassword((prev) => !prev)}
+              >
+                {showPassword ? "Сховати" : "Показати"}
+              </button>
+            </div>
           </div>
 
           <div className="mb-3">
             <label className="form-label">Підтвердити пароль</label>
-            <input
-              type="password"
-              name="confirmPassword"
-              className="form-control"
-              placeholder="Повторіть пароль"
-              value={form.confirmPassword}
-              onChange={handleChange}
-              required
-            />
+            <div className="input-group">
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                name="confirmPassword"
+                className="form-control"
+                placeholder="Повторіть пароль"
+                value={form.confirmPassword}
+                onChange={handleChange}
+                required
+              />
+              <button
+                type="button"
+                className="btn btn-outline-secondary"
+                onClick={() => setShowConfirmPassword((prev) => !prev)}
+              >
+                {showConfirmPassword ? "Сховати" : "Показати"}
+              </button>
+            </div>
           </div>
 
           <button type="submit" className="btn btn-success w-100">
