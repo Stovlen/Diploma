@@ -5,7 +5,6 @@ const authMiddleware = require("../middleware/authMiddleWare");
 
 router.use(authMiddleware); // захищаємо всі маршрути
 
-// 🔥 ВАЖЛИВО — цей маршрут має бути ПЕРШИМ до /:id
 router.get("/suggestions", taskController.getTaskSuggestions);
 router.get("/analytics", authMiddleware, taskController.getAnalytics);
 

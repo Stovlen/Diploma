@@ -31,10 +31,8 @@ import CalendarView from "./pages/CalendarView";
 const LayoutWrapper = ({ children }) => {
   const location = useLocation();
 
-  // Сторінки без navbar/footer
   const noLayoutRoutes = ["/login", "/register", "/forgot-password"];
 
-  // окремо обробимо reset-password, бо там параметр у шляху
   const isNoLayout =
     noLayoutRoutes.includes(location.pathname) ||
     location.pathname.startsWith("/reset-password");

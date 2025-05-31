@@ -26,7 +26,6 @@ const LoginPage = ({ onLogin }) => {
         localStorage.setItem("userRole", data.user.role);
         onLogin();
 
-        // 🔁 Перенаправлення за роллю
         if (data.user.role === "admin") {
           navigate("/admin");
         } else {

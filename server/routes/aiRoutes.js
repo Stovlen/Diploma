@@ -4,11 +4,11 @@ const authMiddleware = require("../middleware/authMiddleWare");
 const {
   getDailyTip,
   generateTaskFromPrompt,
-  analyzeHabits, // 🧠 додали тут
-} = require("../controllers/aiController"); // 🧠 контролер
+  analyzeHabits, 
+} = require("../controllers/aiController"); 
 
 router.get("/daily-tip", authMiddleware, getDailyTip);
 router.post("/generate-task", authMiddleware, generateTaskFromPrompt);
-router.get("/analyze-habits", authMiddleware, analyzeHabits); // 🧠 Шлях
+router.get("/analyze-habits", authMiddleware, analyzeHabits); 
 
 module.exports = router;

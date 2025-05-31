@@ -9,7 +9,6 @@ const CalendarView = () => {
   const [selectedDateTasks, setSelectedDateTasks] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
 
-  // Мапи для перекладу статусу та пріоритету
   const statusMap = {
     not_started: "Очікує",
     in_progress: "У процесі",

@@ -13,7 +13,6 @@ const TasksPage = ({ onLogout }) => {
         </div>
       </div>
 
-      {/* 🔵 Лише одна кнопка */}
       <div className="mb-4">
         <button
           onClick={() => navigate("/calendar")}

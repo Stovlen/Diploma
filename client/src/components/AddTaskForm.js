@@ -46,7 +46,7 @@ const AddTaskForm = ({ onTaskAdded }) => {
       );
 
       onTaskAdded(response.data);
-      toast.success("✅ Задачу додано успішно!"); // 🟢 Ось тут
+      toast.success("✅ Задачу додано успішно!");
 
       setForm({
         title: "",

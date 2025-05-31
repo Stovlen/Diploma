@@ -17,7 +17,7 @@ const LoginForm = ({ onLogin }) => {
       const res = await axios.post("http://localhost:5000/api/login", form);
       const { token, user } = res.data;
       localStorage.setItem("token", token);
-      localStorage.setItem("userRole", user.role); // ✅
+      localStorage.setItem("userRole", user.role); 
       onLogin();
     } catch (err) {
       console.error(err);
