@@ -13,7 +13,7 @@ import { getAuthHeaders } from "../utils/authHeaders";
 
 const TaskAnalytics = () => {
   const [data, setData] = useState([]);
-  const [overdueCount, setOverdueCount] = useState(0); // 👈 нове
+  const [overdueCount, setOverdueCount] = useState(0);
 
   useEffect(() => {
     axios
@@ -51,7 +51,7 @@ const TaskAnalytics = () => {
           { name: "Виконано", value: counts.done, key: "done" },
         ]);
 
-        setOverdueCount(overdue); // 👈 оновлюємо кількість прострочених
+        setOverdueCount(overdue); //  оновлюємо кількість прострочених
       })
       .catch((err) => console.error("Помилка при завантаженні задач:", err));
   }, []);
@@ -95,7 +95,7 @@ const TaskAnalytics = () => {
               </ResponsiveContainer>
             </div>
 
-            {/* 👇 Додаємо підказку */}
+            {/* Додаємо підказку */}
             {overdueCount > 0 && (
               <div className="text-center mt-3 text-danger fw-bold">
                 ⚠️ У вас {overdueCount} {overdueCount === 1 ? "прострочена задача" : "прострочених задач"}!

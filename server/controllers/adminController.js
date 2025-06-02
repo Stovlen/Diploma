@@ -57,7 +57,7 @@ exports.updateTaskByAdmin = async (req, res) => {
       return res.status(404).json({ error: "Задачу не знайдено" });
     }
 
-    // ❗ Не змінюємо userId, щоб автор залишився тим самим
+    // Не змінюємо userId, щоб автор залишився тим самим
     await task.update({ title, deadline, status, priority, category });
 
     // Повторно знаходимо з приєднаним користувачем
