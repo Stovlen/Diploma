@@ -27,14 +27,16 @@ const TaskPerformanceChart = () => {
 
         const counts = {};
         completedTasks.forEach((task) => {
-          const date = new Date(task.createdAt).toLocaleDateString("uk-UA");
+          const date = new Date(task.updatedAt).toISOString().split("T")[0]; // 👈 Використовуємо дату оновлення
           counts[date] = (counts[date] || 0) + 1;
         });
 
-        const chartData = Object.entries(counts).map(([date, value]) => ({
-          date,
-          completed: value,
-        }));
+        const chartData = Object.entries(counts)
+          .map(([date, value]) => ({
+            date,
+            completed: value,
+          }))
+          .sort((a, b) => new Date(a.date) - new Date(b.date)); // 👈 сортування за датою
 
         setData(chartData);
       })
